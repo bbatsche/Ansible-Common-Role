@@ -19,10 +19,6 @@
   service: name=redis-server state=restarted
   sudo: yes
 
-- name: Restart MongoDB
-  service: name=mongod state=restarted
-  sudo: yes
-
 - name: Update Timezone
   command: dpkg-reconfigure -f noninteractive tzdata
   sudo: yes
