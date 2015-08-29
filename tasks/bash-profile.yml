@@ -1,0 +1,30 @@
+---
+- name: Install Bash Completion
+  apt: package=bash-completion state=present
+  sudo: yes
+
+- name: Turn On Color Prompt
+  lineinfile:
+    dest: ~/.bashrc
+    line: "force_color_prompt=yes"
+    regexp: '#?force_color_prompt=yes'
+    state: present
+
+- name: More User Friendly List Aliases
+  lineinfile:
+    dest: ~/.bashrc
+    line: "alias {{ item.alias }}='{{ item.command }}'"
+    regexp: "^alias {{ item.alias }}="
+    state: present
+  with_items:
+    - { alias: ll, command: "ls -lFh" }
+    - { alias: la, command: "ls -lAh" }
+    - { alias: l,  command: "ls -CF" }
+
+- name: Laravel Environment Setting
+  lineinfile:
+    dest: ~/.bashrc
+    line: 'export LARAVEL_ENV="local"'
+    insertafter: EOF
+    state: present
+  when: app_env == "dev"

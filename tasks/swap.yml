@@ -1,0 +1,21 @@
+---
+- name: Create Swap Space
+  command: fallocate -l 1G /swap
+  sudo: yes
+  when: ansible_swaptotal_mb < 1023
+  notify: Turn on Swap
+
+- name: Make Swap
+  command: mkswap /swap
+  sudo: yes
+  when: ansible_swaptotal_mb < 1023
+  notify: Turn on Swap
+
+- name: Add Swap to Fstab
+  lineinfile:
+    dest:   /etc/fstab
+    regexp: "swap"
+    line:   "/swap none swap sw 0 0"
+    state:  present
+  sudo: yes
+  notify: Turn on Swap

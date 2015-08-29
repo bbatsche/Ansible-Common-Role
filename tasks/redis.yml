@@ -1,0 +1,5 @@
+---
+- name: Install Redis
+  apt: package=redis-server state=present
+  sudo: yes
+  notify: Restart Redis

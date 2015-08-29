@@ -1,0 +1,7 @@
+---
+- name: Install System Ruby
+  apt: package={{ item }} state=present
+  sudo: yes
+  with_items:
+    - ruby
+    - ruby2.0

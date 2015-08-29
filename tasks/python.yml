@@ -1,0 +1,9 @@
+---
+- name: Install Python
+  apt: package={{ item }} state=present
+  sudo: yes
+  with_items:
+    - python-dev
+    - python-pip
+    - python-virtualenv
+    - virtualenvwrapper

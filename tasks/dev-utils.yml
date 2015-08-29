@@ -1,0 +1,12 @@
+---
+- name: Install Bower, Gulp, & Grunt
+  npm: name={{ item }} global=yes production=yes state=present
+  sudo: yes
+  with_items:
+    - bower
+    - gulp
+    - grunt-cli
+
+- name: Install SASS
+  gem: name=sass user_install=no state=present
+  sudo: yes

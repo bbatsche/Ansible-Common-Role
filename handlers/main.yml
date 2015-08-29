@@ -1,0 +1,67 @@
+---
+- name: Restart Nginx
+  service: name=nginx state=restarted
+  sudo: yes
+
+- name: Restart Postfix
+  service: name=postfix state=restarted
+  sudo: yes
+
+- name: Restart Fail2ban
+  service: name=fail2ban state=restarted
+  sudo: yes
+
+- name: Restart SSH
+  service: name=ssh state=restarted
+  sudo: yes
+
+- name: Restart UFW
+  service: name=ufw state=restarted
+  sudo: yes
+
+- name: Restart MySQL
+  service: name=mysql state=restarted
+  sudo: yes
+
+- name: Restart PostgreSQL
+  service: name=postgresql state=restarted
+  sudo: yes
+
+- name: Restart Redis
+  service: name=redis-server state=restarted
+  sudo: yes
+
+- name: Restart MongoDB
+  service: name=mongod state=restarted
+  sudo: yes
+
+- name: Restart HHVM
+  service: name=hhvm state=restarted
+  sudo: yes
+
+- name: Restart Warpspeed PHP-FPM
+  service: name=php5-fpm-{{ domain }} state=restarted
+  when: warpspeed_root is defined and warpspeed_root != "" and domain is defined
+  sudo: yes
+
+- name: Restart PHP-FPM
+  service: name=php5-fpm state=restarted
+  when: warpspeed_root is not defined or warpspeed_root == ""
+  sudo: yes
+
+- name: Reload Init Config
+  command: initctl reload-configuration
+  sudo: yes
+  notify: Restart Warpspeed PHP-FPM
+
+- name: Update Timezone
+  command: dpkg-reconfigure -f noninteractive tzdata
+  sudo: yes
+
+- name: Turn on Swap
+  command: swapon -ae
+  sudo: yes
+
+- name: Rehash Rbenv
+  command: rbenv rehash
+  sudo: yes
