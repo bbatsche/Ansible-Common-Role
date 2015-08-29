@@ -1,7 +1,4 @@
 ---
-mysql_admin: vagrant
-mysql_pass: vagrant
-
 postgres_admin: vagrant
 postgres_pass: vagrant
 
