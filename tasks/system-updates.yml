@@ -1,11 +1,11 @@
 ---
-- name: Update apt Keys
+- name: Update APT Keys
   script: update-apt-keys.pl
   sudo: yes
   register: apt_key_result
   changed_when: apt_key_result.stdout != "0"
 
-- name: Update apt
+- name: Update APT
   apt: update_cache=yes upgrade=yes cache_valid_time=86400
   sudo: yes
   notify: Restart Server
@@ -14,7 +14,7 @@
   apt: pkg=unattended-upgrades state=present
   sudo: yes
 
-- name: Adjust apt Update Intervals
+- name: Adjust APT Update Intervals
   copy: src=apt_auto_upgrades dest=/etc/apt/apt.conf.d/20auto-upgrades
   sudo: yes
 
