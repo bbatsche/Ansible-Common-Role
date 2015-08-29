@@ -1,6 +1,4 @@
 ---
-www_home: /srv/www
-
 mysql_admin: vagrant
 mysql_pass: vagrant
 
@@ -9,8 +7,6 @@ postgres_pass: vagrant
 
 mongo_admin: vagrant
 mongo_pass: vagrant
-
-app_env: dev
 
 ruby_version: 2.2.2
 
