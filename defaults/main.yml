@@ -1,7 +1,4 @@
 ---
-postgres_admin: vagrant
-postgres_pass: vagrant
-
 mongo_admin: vagrant
 mongo_pass: vagrant
 

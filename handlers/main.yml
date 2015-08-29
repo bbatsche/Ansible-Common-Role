@@ -15,10 +15,6 @@
   service: name=ufw state=restarted
   sudo: yes
 
-- name: Restart PostgreSQL
-  service: name=postgresql state=restarted
-  sudo: yes
-
 - name: Restart Redis
   service: name=redis-server state=restarted
   sudo: yes
