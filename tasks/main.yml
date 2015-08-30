@@ -3,7 +3,6 @@
 - include: sysctl.yml
 - include: system-updates.yml
 - include: system-utilities.yml
-- include: python.yml
 - include: swap.yml
 - include: redis.yml
 - include: ruby.yml
