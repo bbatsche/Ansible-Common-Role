@@ -26,7 +26,3 @@
 - name: Turn on Swap
   command: swapon -ae
   sudo: yes
-
-- name: Rehash Rbenv
-  command: rbenv rehash
-  sudo: yes
