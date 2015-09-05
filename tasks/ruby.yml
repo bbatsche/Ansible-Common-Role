@@ -5,3 +5,13 @@
   with_items:
     - ruby
     - ruby2.0
+
+- name: Skip Gem Documentation
+  lineinfile:
+    dest: /etc/gemrc
+    create: yes
+    state: present
+    line: "gem: --no-rdoc --no-ri"
+    regexp: "^gem:"
+  sudo: yes
+  when: app_env != "dev"
