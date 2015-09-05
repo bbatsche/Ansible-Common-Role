@@ -8,7 +8,6 @@
 - name: Update APT
   apt: update_cache=yes upgrade=yes cache_valid_time=86400
   sudo: yes
-  notify: Restart Server
 
 - name: Install unattended-upgrades
   apt: pkg=unattended-upgrades state=present
