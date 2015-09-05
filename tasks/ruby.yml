@@ -14,4 +14,4 @@
     line: "gem: --no-rdoc --no-ri"
     regexp: "^gem:"
   sudo: yes
-  when: app_env != "dev"
+  when: app_env is defined and app_env != "dev"

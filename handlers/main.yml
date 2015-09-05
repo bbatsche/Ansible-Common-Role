@@ -10,3 +10,7 @@
 - name: Turn on Swap
   command: swapon -ae
   sudo: yes
+
+- name: Restart Procps
+  service: name=procps state=restarted
+  sudo: yes
