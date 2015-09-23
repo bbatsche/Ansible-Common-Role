@@ -4,7 +4,6 @@
 - include: system-updates.yml
 - include: system-utilities.yml
 - include: swap.yml
-- include: redis.yml
 - include: ruby.yml
 - include: nodejs.yml
 - include: dev-utils.yml
