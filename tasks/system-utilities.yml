@@ -7,8 +7,6 @@
     - git
     - curl
     - libcurl4-openssl-dev
-    - python-mysqldb
-    - python-psycopg2
     - build-essential
     - mailutils
     - apt-transport-https
