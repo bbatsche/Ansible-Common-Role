@@ -9,7 +9,7 @@
   apt: update_cache=yes upgrade=yes cache_valid_time=86400
   sudo: yes
 
-- name: Install unattended-upgrades
+- name: Install Unattended Upgrades
   apt: pkg=unattended-upgrades state=present
   sudo: yes
 
@@ -17,14 +17,13 @@
   copy: src=apt_auto_upgrades dest=/etc/apt/apt.conf.d/20auto-upgrades
   sudo: yes
 
-- name: Remove Updates from unattended-upgrades
-  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="-updates" state=absent
-  sudo: yes
-
-- name: Remove Proposed from unattended-upgrades
-  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="-proposed" state=absent
-  sudo: yes
-
-- name: Remove Backports from unattended-upgrades
-  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="-backports" state=absent
+- name: Remove Non-Security Sources from Unattended Upgrades
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: "-{{ item }}"
+    state: absent
+  with_items:
+    - updates
+    - proposed
+    - backports
   sudo: yes
