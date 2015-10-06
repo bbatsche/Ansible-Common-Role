@@ -18,5 +18,5 @@
     state: present
   with_items:
     - { alias: ll, command: "ls -lFh" }
-    - { alias: la, command: "ls -lAh" }
+    - { alias: la, command: "ls -lFhA" }
     - { alias: l,  command: "ls -CF" }
