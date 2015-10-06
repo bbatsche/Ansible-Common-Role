@@ -2,8 +2,14 @@
 - hosts: all
   tasks:
     - include: ../../tasks/bash-profile.yml
-    - command: dd if=/dev/zero of={{ ansible_user_dir }}/test bs=1024 count=1
-    - command: dd if=/dev/zero of={{ ansible_user_dir }}/.test bs=1024 count=1024
-    - file: name={{ ansible_user_dir }}/test mode=0644 state=file
-    - file: name={{ ansible_user_dir }}/.test mode=0755 state=file
-    - file: name={{ ansible_user_dir }}/test_dir mode=0755 state=directory
+
+    - name: Mock files for spec
+      command: dd if=/dev/zero of={{ ansible_user_dir }}/test bs=1024 count=1
+    - name: Mock files for spec
+      command: dd if=/dev/zero of={{ ansible_user_dir }}/.test bs=1024 count=1024
+    - name: Mock files for spec
+      file: name={{ ansible_user_dir }}/test mode=0644 state=file
+    - name: Mock files for spec
+      file: name={{ ansible_user_dir }}/.test mode=0755 state=file
+    - name: Mock files for spec
+      file: name={{ ansible_user_dir }}/test_dir mode=0755 state=directory

@@ -1,0 +1,29 @@
+---
+- hosts: all
+  vars:
+    - console_user: test_user
+  tasks:
+    - name: Create test user for spec
+      user:
+        name:     "{{ console_user }}"
+        password: ""
+        shell:    /bin/bash
+        state:    present
+      become: yes
+
+    - name: Full permissions to test user home directory
+      file: name=/home/{{ console_user }} mode="u+rwX,g+rwX,o+rwX" state=directory recurse=yes
+      become: yes
+
+    - include: ../../tasks/bash-profile.yml
+
+    - name: Mock files for spec
+      command: dd if=/dev/zero of=/home/{{ console_user }}/test bs=1024 count=1
+    - name: Mock files for spec
+      command: dd if=/dev/zero of=/home/{{ console_user }}/.test bs=1024 count=1024
+    - name: Mock files for spec
+      file: name=/home/{{ console_user }}/test mode=0644 state=file
+    - name: Mock files for spec
+      file: name=/home/{{ console_user }}/.test mode=0755 state=file
+    - name: Mock files for spec
+      file: name=/home/{{ console_user }}/test_dir mode=0755 state=directory
