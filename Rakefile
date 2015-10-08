@@ -8,7 +8,7 @@ task :spec => 'spec:all'
 class VagrantHelper
   include Singleton
 
-  def initialize(logfile = ENV['VAGRANT_LOG'])
+  def initialize(logfile = ENV['VAGRANT_LOG_FILE'])
     @logFilename = logfile
     @logger = Logger.new @logFilename
 
@@ -23,7 +23,7 @@ class VagrantHelper
     puts "==> #{name} test environment (this may take several minutes)"
     IO.popen(cmd) do |io|
       io.each do |line|
-        @logger.info line
+        @logger.info line.strip
       end
     end
 
