@@ -1,0 +1,44 @@
+---
+- name: Update APT Keys
+  script: update-apt-keys.pl
+  sudo: yes
+  register: apt_key_result
+  changed_when: apt_key_result.stdout != "0"
+
+- name: Update APT
+  apt: update_cache=yes upgrade=yes cache_valid_time=86400
+  sudo: yes
+
+- name: Install Unattended Upgrades
+  apt: pkg=unattended-upgrades state=present
+  sudo: yes
+
+- name: Adjust APT Update Intervals
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/10periodic
+    line: '{{ item.key }} "{{ item.value }}";'
+    regexp: "^{{ item.key }}"
+    state: present
+  with_items:
+    - { key: "APT::Periodic::AutocleanInterval",    value: 7 }
+    - { key: "APT::Periodic::Update-Package-Lists", value: 1 }
+    - { key: "APT::Periodic::Unattended-Upgrade",   value: 1 }
+  sudo: yes
+
+- name: Remove Non-Security Sources from Unattended Upgrades
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^/?/?\s+"\$\{distro_id\}:\$\{distro_codename\}-{{ item }}";$'
+    state: absent
+  with_items:
+    - updates
+    - proposed
+    - backports
+  sudo: yes
+
+- name: Remove Old Dependencies After Upgrade
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '/?/?\s*Unattended-Upgrade::Remove-Unused-Dependencies'
+    line: Unattended-Upgrade::Remove-Unused-Dependencies "true";
+  sudo: yes
