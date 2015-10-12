@@ -1,8 +1,8 @@
 ---
 - include: timezone.yml
 - include: sysctl.yml
-- include: system-updates.yml
-- include: system-utilities.yml
+- include: updates.yml
+- include: utilities.yml
 - include: swap.yml
 - include: ruby.yml
 - include: nodejs.yml
