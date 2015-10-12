@@ -6,5 +6,4 @@
     - vim
     - git
     - curl
-    - build-essential
     - mailutils
