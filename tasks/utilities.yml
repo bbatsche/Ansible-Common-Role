@@ -6,8 +6,5 @@
     - vim
     - git
     - curl
-    - libcurl4-openssl-dev
     - build-essential
     - mailutils
-    - apt-transport-https
-    - ca-certificates
