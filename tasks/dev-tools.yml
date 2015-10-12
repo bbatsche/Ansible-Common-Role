@@ -1,4 +1,8 @@
 ---
+- name: Install Git
+  apt: package=git state=present
+  sudo: yes
+
 - name: Install Bower, Gulp, & Grunt
   npm: name={{ item }} global=yes production=yes state=present
   sudo: yes

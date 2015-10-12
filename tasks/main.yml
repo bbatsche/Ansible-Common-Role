@@ -2,9 +2,8 @@
 - include: timezone.yml
 - include: sysctl.yml
 - include: updates.yml
-- include: utilities.yml
 - include: swap.yml
 - include: ruby.yml
 - include: nodejs.yml
-- include: dev-utils.yml
+- include: dev-tools.yml
 - include: bash-profile.yml

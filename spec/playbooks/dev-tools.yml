@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+    # Required tasks for installing dev tools
+    - include: ../../tasks/nodejs.yml
+    - include: ../../tasks/ruby.yml
+
+    - include: ../../tasks/dev-tools.yml
