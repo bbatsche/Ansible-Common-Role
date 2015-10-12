@@ -6,12 +6,11 @@
     - ruby
     - ruby2.0
 
-- name: Skip Gem Documentation
+- name: Set Gem Documentation Options
   lineinfile:
     dest: /etc/gemrc
     create: yes
     state: present
-    line: "gem: --no-rdoc --no-ri"
+    line: "gem: {{ '--no-rdoc --no-ri' if app_env is defined and app_env != 'dev' else '' }}"
     regexp: "^gem:"
   sudo: yes
-  when: app_env is defined and app_env != "dev"
