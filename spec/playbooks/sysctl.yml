@@ -1,0 +1,6 @@
+---
+- hosts: all
+  tasks:
+    - include: ../../tasks/sysctl.yml
+  handlers:
+    - include: ../../handlers/main.yml
