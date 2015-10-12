@@ -23,10 +23,16 @@ class SpecHelper
     Net::SSH::Config.for(@hostname, [@sshConfig.path])
   end
 
-  def provision(playbook)
+  def provision(playbook, extraVars = {})
     playbook = File.expand_path(playbook, File.dirname(__FILE__))
 
-    system "ansible-playbook -i #{@inventory.path} #{playbook}"
+    cmd = "ansible-playbook -i #{@inventory.path} #{playbook}"
+
+    extraVars.each do |key, value|
+      cmd << " -e \"#{key.to_s}=#{value}\""
+    end
+
+    system cmd
   end
 end
 
