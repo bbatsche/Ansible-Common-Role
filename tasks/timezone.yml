@@ -1,7 +1,7 @@
 ---
 - name: Set Timezone
   copy:
-    content: '{{ timezone | default("Etc/UTC") }}\n'
+    content: '{{ timezone }}\n'
     dest:    /etc/timezone
   sudo: yes
   notify: Update Timezone
