@@ -33,7 +33,6 @@ class VagrantHelper
   end
 end
 
-
 namespace :vagrant do
   desc "Start the test vagrant environment (w/o provisioning)"
   task :up => :dotenv do
@@ -49,6 +48,13 @@ namespace :vagrant do
   task :destroy => :dotenv do
     VagrantHelper.instance.cmd("vagrant destroy --force #{ENV['HOST_NAME']}", "Destroying")
   end
+end
+
+desc "Run an arbitrary vagrant command for the current environment"
+task :vagrant, [:cmd] => [:dotenv] do |t, args|
+  cmd = args[:cmd]
+
+  exec "vagrant #{cmd} #{ENV['HOST_NAME']}"
 end
 
 namespace :spec do
@@ -67,7 +73,7 @@ namespace :spec do
   tasks.each do |taskName|
     desc "Run serverspec tests for #{taskName}"
 
-    RSpec::Core::RakeTask.new(taskName.to_sym => :dotenv) do |t|
+    RSpec::Core::RakeTask.new(taskName.to_sym => [:dotenv, :"vagrant:up"]) do |t|
       t.pattern = "./spec/#{taskName}-spec.rb"
     end
   end
