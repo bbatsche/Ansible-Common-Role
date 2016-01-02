@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: Ben Batschelet
+  description: A basic role providing some common development tools and system configurations for doing full stack web development
+  license: MIT
+  min_ansible_version: 1.9
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  categories:
+  - development
+  - system
+  - web
