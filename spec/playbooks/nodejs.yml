@@ -1,4 +1,7 @@
 ---
 - hosts: all
   tasks:
+    # Include task to update APT cache before doing other installs
+    - include: ../../tasks/updates.yml
+
     - include: ../../tasks/nodejs.yml
