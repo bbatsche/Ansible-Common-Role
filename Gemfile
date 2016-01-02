@@ -1,6 +1,7 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
+gem 'bundler',    '>= 1.5.2', '<= 1.10.6'
 gem 'rake',       '~> 10.4'
 gem 'rspec',      '~> 3.3'
 gem 'dotenv',     '~> 2.0'

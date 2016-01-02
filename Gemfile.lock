@@ -9,31 +9,31 @@ GEM
     net-ssh (2.9.2)
     net-telnet (0.1.1)
     rake (10.4.2)
-    rspec (3.3.0)
-      rspec-core (~> 3.3.0)
-      rspec-expectations (~> 3.3.0)
-      rspec-mocks (~> 3.3.0)
-    rspec-core (3.3.2)
-      rspec-support (~> 3.3.0)
-    rspec-expectations (3.3.1)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
+    rspec-core (3.4.1)
+      rspec-support (~> 3.4.0)
+    rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
+      rspec-support (~> 3.4.0)
     rspec-its (1.2.0)
       rspec-core (>= 3.0.0)
       rspec-expectations (>= 3.0.0)
-    rspec-mocks (3.3.2)
+    rspec-mocks (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-support (3.3.0)
-    serverspec (2.24.1)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
+    serverspec (2.27.0)
       multi_json
       rspec (~> 3.0)
       rspec-its
-      specinfra (~> 2.43)
+      specinfra (~> 2.46)
     sfl (2.2)
-    specinfra (2.43.11)
+    specinfra (2.47.1)
       net-scp
-      net-ssh (~> 2.7)
+      net-ssh (>= 2.7, < 3.1)
       net-telnet
       sfl
 
@@ -41,6 +41,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (>= 1.5.2, <= 1.10.6)
   dotenv (~> 2.0)
   net-ssh (~> 2.7)
   rake (~> 10.4)
