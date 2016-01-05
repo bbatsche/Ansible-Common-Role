@@ -2,8 +2,8 @@ require 'serverspec'
 require 'net/ssh'
 require 'tempfile'
 require 'singleton'
+require 'shellwords'
 
-# make a singleton
 class SpecHelper
   include Singleton
 
@@ -15,7 +15,13 @@ class SpecHelper
     @sshConfig.close
 
     @inventory = Tempfile.new('inventory', Dir.tmpdir)
-    @inventory.write("#{@hostname} ansible_ssh_host=#{sshOptions[:host_name]} ansible_ssh_port=#{sshOptions[:port]} ansible_ssh_private_key_file=#{sshOptions[:keys][0]}")
+
+    keyPath = Shellwords.escape(sshOptions[:keys].first)
+
+    invContent = "#{@hostname} ansible_ssh_host=#{sshOptions[:host_name]} "
+    invContent << "ansible_ssh_port=#{sshOptions[:port]} ansible_ssh_private_key_file=#{keyPath}"
+
+    @inventory.write(invContent)
     @inventory.close
   end
 
@@ -24,7 +30,7 @@ class SpecHelper
   end
 
   def provision(playbook, extraVars = {})
-    playbook = File.expand_path(playbook, File.dirname(__FILE__))
+    playbook = Shellwords.escape(File.expand_path(playbook, File.dirname(__FILE__)))
 
     cmd = "ansible-playbook -i #{@inventory.path} #{playbook}"
 
