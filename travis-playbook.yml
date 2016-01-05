@@ -1,0 +1,7 @@
+---
+- hosts: all
+  remote_user: root
+  become: yes
+
+  tasks:
+    - include: tasks/main.yml
