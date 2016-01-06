@@ -1,0 +1,26 @@
+---
+sudo: required
+dist: trusty
+
+language: generic
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq python-apt python-pycurl
+install:
+  - sudo pip install "ansible>=1.9"
+script:
+  - echo localhost > inventory
+
+  # Syntax check
+  - ansible-playbook -i inventory travis-playbook.yml --syntax-check
+
+  # Play test
+  - ansible-playbook -i inventory travis-playbook.yml --connection=local
+
+  # Idempotence test
+  - >
+    ansible-playbook -i inventory travis-playbook.yml --connection=local
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
