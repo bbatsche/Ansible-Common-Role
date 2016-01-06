@@ -1,6 +1,8 @@
 Base Ansible Role
 =================
 
+[![Build Status](https://travis-ci.org/bbatsche/Ansible-Common-Role.svg)](https://travis-ci.org/bbatsche/Ansible-Common-Role)
+
 This is a basic Ansible role that installs some common development tools and system configurations for doing full stack web development. It installs or sets up:
 
 - Some common BASH profile tweaks
