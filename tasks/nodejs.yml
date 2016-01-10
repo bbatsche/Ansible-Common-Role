@@ -1,7 +1,7 @@
 ---
 - name: Install System Node
   apt: package={{ item }} state=present
-  sudo: yes
+  become: yes
   with_items:
     - nodejs
     - nodejs-legacy

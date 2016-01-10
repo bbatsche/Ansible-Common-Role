@@ -1,7 +1,7 @@
 ---
 - name: Install Bash Completion
   apt: package=bash-completion state=present
-  sudo: yes
+  become: yes
 
 - name: Turn On Color Prompt
   lineinfile:

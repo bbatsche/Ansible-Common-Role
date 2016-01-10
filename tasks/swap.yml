@@ -1,16 +1,16 @@
 ---
 - name: Create Swap File
   command: fallocate -l 1G /swap
-  sudo: yes
+  become: yes
   when: ansible_swaptotal_mb < 1023
 
 - name: Secure Swap File
   file: name=/swap owner=root group=root mode=0600
-  sudo: yes
+  become: yes
 
 - name: Make Swap
   command: mkswap /swap
-  sudo: yes
+  become: yes
   when: ansible_swaptotal_mb < 1023
   notify: Turn on Swap
 
@@ -20,4 +20,4 @@
     regexp: "swap"
     line:   "/swap none swap sw 0 0"
     state:  present
-  sudo: yes
+  become: yes

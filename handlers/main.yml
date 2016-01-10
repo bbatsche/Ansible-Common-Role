@@ -1,16 +1,16 @@
 ---
 - name: Restart Redis
   service: name=redis-server state=restarted
-  sudo: yes
+  become: yes
 
 - name: Update Timezone
   command: dpkg-reconfigure -f noninteractive tzdata
-  sudo: yes
+  become: yes
 
 - name: Turn on Swap
   command: swapon -ae
-  sudo: yes
+  become: yes
 
 - name: Restart Procps
   service: name=procps state=restarted
-  sudo: yes
+  become: yes
