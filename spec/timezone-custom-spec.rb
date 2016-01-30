@@ -1,8 +1,9 @@
-require_relative 'spec_helper'
+require_relative "lib/ansible_helper"
+require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    SpecHelper.instance.provision('playbooks/timezone.yml', { timezone: "America/Phoenix" })
+    AnsibleHelper.instance.playbook('playbooks/timezone.yml', { timezone: "America/Phoenix" })
   end
 end
 

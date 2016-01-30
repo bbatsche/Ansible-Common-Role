@@ -1,8 +1,9 @@
-require_relative 'spec_helper'
+require_relative "lib/ansible_helper"
+require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    SpecHelper.instance.provision('playbooks/ruby.yml', { app_env: "production" })
+    AnsibleHelper.instance.playbook('playbooks/ruby.yml', { app_env: "production" })
   end
 end
 
