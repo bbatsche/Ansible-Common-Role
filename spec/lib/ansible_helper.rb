@@ -29,7 +29,8 @@ class AnsibleHelper
   end
 
   def playbook(playbookFile, extraVars = {})
-    playbookFile = Shellwords.escape(File.expand_path(playbookFile, File.dirname(__FILE__)))
+    specDir = File.expand_path(File.dirname(__FILE__) + "/../")
+    playbookFile = Shellwords.escape(File.expand_path(playbookFile, specDir))
 
     cmd = "ansible-playbook -i #{@inventory.path} #{playbookFile}"
 
@@ -41,9 +42,13 @@ class AnsibleHelper
   end
 
   def cmd(moduleName, moduleArgs = "")
-    moduleArgs = Shellwords.escape moduleArgs
+    cmd = "ansible #{@hostname} -i #{@inventory.path} -m #{moduleName} -u vagrant --become"
 
-    cmd = "ansible #{@hostname} -i #{@inventory.path} -m #{moduleName} -a \"#{moduleArgs}\" -u vagrant --become"
+    if moduleArgs != ""
+      moduleArgs = Shellwords.escape moduleArgs
+
+      cmd << " -a #{moduleArgs}"
+    end
 
     system cmd
   end
