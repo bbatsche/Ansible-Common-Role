@@ -1,61 +1,32 @@
-require 'rake'
-require 'logger'
-require 'rspec/core/rake_task'
-require 'dotenv/tasks'
+require "rake"
+require "rspec/core/rake_task"
+require "dotenv/tasks"
+require_relative "spec/lib/ansible_helper"
+require_relative "spec/lib/vagrant_helper"
 
-task :spec => 'spec:all'
-
-class VagrantHelper
-  include Singleton
-
-  def initialize(logfile = ENV['VAGRANT_LOG_FILE'])
-    @logFilename = logfile
-    @logger = Logger.new @logFilename
-
-    @logger.formatter = proc do |severity, datetime, progname, msg|
-      date_format = datetime.strftime "%H:%M:%S"
-
-      "[#{date_format}] #{msg}\n"
-    end
-  end
-
-  def cmd(cmd, name)
-    puts "==> #{name} test environment (this may take several minutes)"
-    IO.popen(cmd) do |io|
-      io.each do |line|
-        @logger.info line.strip
-      end
-    end
-
-    if !$?.success?
-      raise "    #{name} test environment failed! See #{@logFilename} for more details."
-    end
-  end
+desc "Run an arbitrary vagrant command for the test environment"
+task :vagrant, [:cmd] => [:dotenv] do |t, args|
+  exec "vagrant #{args.cmd} #{ENV['HOST_NAME']}"
 end
 
 namespace :vagrant do
-  desc "Start the test vagrant environment (w/o provisioning)"
+  desc "Boot the test environment (w/o provisioning)"
   task :up => :dotenv do
-    VagrantHelper.instance.cmd("vagrant up --provider=virtualbox --no-color --no-provision #{ENV['HOST_NAME']}", "Booting")
+    VagrantHelper.instance.cmd("Booting", "up --provider=virtualbox --no-color --no-provision")
   end
 
-  desc "Provision the test vagrant environment"
+  desc "Provision the test environment"
   task :provision => :dotenv do
-    VagrantHelper.instance.cmd("vagrant provision #{ENV['HOST_NAME']}", "Provisioning")
+    VagrantHelper.instance.cmd("Provisioning", "provision")
   end
 
-  desc "Destroy the test vagrant environment"
+  desc "Destroy the test environment"
   task :destroy => :dotenv do
-    VagrantHelper.instance.cmd("vagrant destroy --force #{ENV['HOST_NAME']}", "Destroying")
+    VagrantHelper.instance.cmd("Destroying", "destroy --force")
   end
 end
 
-desc "Run an arbitrary vagrant command for the current environment"
-task :vagrant, [:cmd] => [:dotenv] do |t, args|
-  cmd = args[:cmd]
-
-  exec "vagrant #{cmd} #{ENV['HOST_NAME']}"
-end
+task :spec => "spec:all"
 
 namespace :spec do
   tasks = []
@@ -79,4 +50,20 @@ namespace :spec do
   end
 end
 
-task :default => ["vagrant:up", "vagrant:provision", "spec:all", "vagrant:destroy"]
+desc "Run an arbitrary Ansible module in the test environment"
+task :ansible, [:module, :args] => [:"vagrant:up"] do |t, args|
+  args.with_defaults :args => ""
+
+  AnsibleHelper.instance.cmd args.module, args.args
+end
+
+namespace :ansible do
+  desc "Run an arbitrary Ansible playbook in the test environment"
+  task :playbook, [:filename, :vars] => [:"vagrant:up"] do |t, args|
+    args.with_defaults :vars => ""
+
+    AnsibleHelper.instance.playbook args.filename, args.vars
+  end
+end
+
+task :default => [:"vagrant:up", :"vagrant:provision", :"spec:all", :"vagrant:destroy"]

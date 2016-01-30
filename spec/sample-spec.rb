@@ -1,8 +1,9 @@
-require_relative 'spec_helper'
+require_relative "lib/ansible_helper"
+require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    SpecHelper.instance.provision 'playbooks/sample-playbook.yml'
+    AnsibleHelper.instance.playbook "playbooks/sample-playbook.yml"
   end
 end
 
