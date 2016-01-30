@@ -59,10 +59,10 @@ end
 
 namespace :ansible do
   desc "Run an arbitrary Ansible playbook in the test environment"
-  task :playbook, [:filename, :vars] => [:"vagrant:up"] do |t, args|
-    args.with_defaults :vars => ""
+  task :playbook, [:filename] => [:"vagrant:up"] do |t, args|
+    filename = File.expand_path(args.filename, File.dirname(__FILE__))
 
-    AnsibleHelper.instance.playbook args.filename, args.vars
+    AnsibleHelper.instance.playbook filename
   end
 end
 
