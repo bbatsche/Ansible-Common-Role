@@ -1,6 +1,7 @@
-require 'serverspec'
+require "serverspec"
+require_relative "lib/ansible_helper"
 
-options = SpecHelper.instance.sshOptions
+options = AnsibleHelper.instance.sshOptions
 
 set :backend, :ssh
 
