@@ -11,6 +11,6 @@
     dest: /etc/gemrc
     create: yes
     state: present
-    line: "gem: {{ '--no-rdoc --no-ri' if app_env != 'dev' else '' }}"
+    line: "gem: {{ '--no-rdoc --no-ri' if env_name != 'dev' else '' }}"
     regexp: "^gem:"
   become: yes

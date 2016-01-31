@@ -3,7 +3,7 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook('playbooks/ruby.yml', { app_env: "production" })
+    AnsibleHelper.instance.playbook('playbooks/ruby.yml', { env_name: "production" })
   end
 end
 

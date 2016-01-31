@@ -24,7 +24,7 @@ Role Variables
 
 The role is designed to create a basic development environment out of the box, however there are some additional variables that can be set as required:
 
-- `app_env` &mdash; Whether the server is going to be used for "development" or "production" or other. Default is "dev".
+- `env_name` &mdash; Whether the server is going to be used for "development" or "production" or other. Default is "dev".
 - `timezone` &mdash; What timezone the server is in. Default is "Etc/UTC".
 - `console_user` &mdash; If you are setting up a new user for your server, you can use this value to install the BASH profile for that user. Default is `ansible_user_id`
 
