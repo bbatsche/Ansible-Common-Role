@@ -8,8 +8,16 @@ galaxy_info:
   - name: Ubuntu
     versions:
     - trusty
-  categories:
+  galaxy_tags:
+  - bash
+  - bower
   - development
+  - git
+  - grunt
+  - gulp
+  - node
+  - ruby
+  - sass
   - system
   - web
 dependencies: []
