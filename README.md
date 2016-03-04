@@ -2,7 +2,7 @@ Base Ansible Role
 =================
 
 [![Build Status](https://travis-ci.org/bbatsche/Ansible-Common-Role.svg)](https://travis-ci.org/bbatsche/Ansible-Common-Role)
-[![Ansible Galaxy](https://img.shields.io/ansible/role/6769.svg)](https://galaxy.ansible.com/detail#/role/6769)
+[![Ansible Galaxy](https://img.shields.io/ansible/role/10938.svg)](https://galaxy.ansible.com/bbatsche/Base)
 
 This is a basic Ansible role that installs some common development tools and system configurations for doing full stack web development. It installs or sets up:
 
