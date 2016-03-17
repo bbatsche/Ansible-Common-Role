@@ -1,27 +1,26 @@
 require "rake"
 require "rspec/core/rake_task"
-require "dotenv/tasks"
 require_relative "spec/lib/ansible_helper"
 require_relative "spec/lib/vagrant_helper"
 
 desc "Run an arbitrary vagrant command for the test environment"
-task :vagrant, [:cmd] => [:dotenv] do |t, args|
-  exec "vagrant #{args.cmd} #{ENV['HOST_NAME']}"
+task :vagrant, [:cmd] do |t, args|
+  exec "vagrant #{args.cmd} default"
 end
 
 namespace :vagrant do
   desc "Boot the test environment (w/o provisioning)"
-  task :up => :dotenv do
+  task :up do
     VagrantHelper.instance.cmd("Booting", "up --provider=virtualbox --no-color --no-provision")
   end
 
   desc "Provision the test environment"
-  task :provision => :dotenv do
+  task :provision do
     VagrantHelper.instance.cmd("Provisioning", "provision")
   end
 
   desc "Destroy the test environment"
-  task :destroy => :dotenv do
+  task :destroy do
     VagrantHelper.instance.cmd("Destroying", "destroy --force")
   end
 end
@@ -44,7 +43,7 @@ namespace :spec do
   tasks.each do |taskName|
     desc "Run serverspec tests for #{taskName}"
 
-    RSpec::Core::RakeTask.new(taskName.to_sym => [:dotenv, :"vagrant:up"]) do |t|
+    RSpec::Core::RakeTask.new(taskName.to_sym => [:"vagrant:up"]) do |t|
       t.pattern = "./spec/#{taskName}-spec.rb"
     end
   end

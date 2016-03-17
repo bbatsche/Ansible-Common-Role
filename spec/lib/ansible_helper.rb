@@ -6,18 +6,16 @@ require 'shellwords'
 class AnsibleHelper
   include Singleton
 
-  def initialize(host = ENV['HOST_NAME'])
-    @hostname = host
-
+  def initialize
     @sshConfig = Tempfile.new('ssh', Dir.tmpdir)
-    @sshConfig.write(`vagrant ssh-config #{@hostname}`)
+    @sshConfig.write(`vagrant ssh-config default`)
     @sshConfig.close
 
     @inventory = Tempfile.new('inventory', Dir.tmpdir)
 
     keyPath = Shellwords.escape(sshOptions[:keys].first)
 
-    invContent = "#{@hostname} ansible_ssh_host=#{sshOptions[:host_name]} "
+    invContent = "default ansible_ssh_host=#{sshOptions[:host_name]} "
     invContent << "ansible_ssh_port=#{sshOptions[:port]} ansible_ssh_private_key_file=#{keyPath}"
 
     @inventory.write(invContent)
@@ -25,7 +23,7 @@ class AnsibleHelper
   end
 
   def sshOptions
-    Net::SSH::Config.for(@hostname, [@sshConfig.path])
+    Net::SSH::Config.for("default", [@sshConfig.path])
   end
 
   def playbook(playbookFile, extraVars = {})
@@ -42,7 +40,7 @@ class AnsibleHelper
   end
 
   def cmd(moduleName, moduleArgs = "")
-    cmd = "ansible #{@hostname} -i #{@inventory.path} -m #{moduleName} -u vagrant --become"
+    cmd = "ansible default -i #{@inventory.path} -m #{moduleName} -u vagrant --become"
 
     if moduleArgs != ""
       moduleArgs = Shellwords.escape moduleArgs

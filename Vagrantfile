@@ -2,10 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure('2') do |config|
-  config.vm.define ENV['HOST_NAME'] do |c|
-    c.vm.box      = 'ubuntu/trusty64'
-    c.vm.hostname = ENV['HOST_NAME']
-  end
+  config.vm.box = 'ubuntu/trusty64'
 
   if Vagrant.has_plugin? 'vagrant-cachier'
     config.cache.scope = :box
