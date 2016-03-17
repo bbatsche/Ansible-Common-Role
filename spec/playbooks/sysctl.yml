@@ -1,6 +1,18 @@
 ---
 - hosts: all
   tasks:
-    - include: ../../tasks/sysctl.yml
+  - include: "../../tasks/sysctl.yml"
   handlers:
-    - include: ../../handlers/main.yml
+  - include: "../../handlers/main.yml"
+  - name: Restart Redis
+    service: name=redis-server state=restarted
+    become: true
+  - name: Update Timezone
+    command: dpkg-reconfigure -f noninteractive tzdata
+    become: true
+  - name: Turn on Swap
+    command: swapon -ae
+    become: true
+  - name: Restart Procps
+    service: name=procps state=restarted
+    become: true

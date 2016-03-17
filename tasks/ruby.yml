@@ -1,6 +1,6 @@
 ---
 - name: Install System Ruby
-  apt: package={{ item }} state=present
+  apt: name={{ item }} state=present
   become: yes
   with_items:
     - ruby
