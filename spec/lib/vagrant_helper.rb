@@ -4,8 +4,8 @@ require 'singleton'
 class VagrantHelper
   include Singleton
 
-  def initialize(logfile = ENV['VAGRANT_LOG_FILE'])
-    @logFilename = logfile
+  def initialize
+    @logFilename = "vagrant.log"
     @logger = Logger.new @logFilename
 
     @logger.formatter = proc do |severity, datetime, progname, msg|
@@ -17,7 +17,7 @@ class VagrantHelper
 
   def cmd(name, cmd)
     puts "==> #{name} test environment (this may take several minutes)"
-    IO.popen("vagrant #{cmd} #{ENV['HOST_NAME']}") do |io|
+    IO.popen("vagrant #{cmd} default") do |io|
       io.each do |line|
         @logger.info line.strip
       end

@@ -6,7 +6,7 @@ require_relative "spec/lib/vagrant_helper"
 
 desc "Run an arbitrary vagrant command for the test environment"
 task :vagrant, [:cmd] => [:dotenv] do |t, args|
-  exec "vagrant #{args.cmd} #{ENV['HOST_NAME']}"
+  exec "vagrant #{args.cmd} default"
 end
 
 namespace :vagrant do
