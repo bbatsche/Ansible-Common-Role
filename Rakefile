@@ -1,4 +1,5 @@
 require "rake"
+require "yaml"
 require "rspec/core/rake_task"
 require_relative "spec/lib/ansible_helper"
 require_relative "spec/lib/vagrant_helper"
@@ -43,7 +44,7 @@ namespace :spec do
   tasks.each do |taskName|
     desc "Run serverspec tests for #{taskName}"
 
-    RSpec::Core::RakeTask.new(taskName.to_sym => [:"vagrant:up"]) do |t|
+    RSpec::Core::RakeTask.new(taskName.to_sym => [:"vagrant:up", :init]) do |t|
       t.pattern = "./spec/#{taskName}-spec.rb"
     end
   end
@@ -63,6 +64,55 @@ namespace :ansible do
 
     AnsibleHelper.instance.playbook filename
   end
+end
+
+task :init => "init:default"
+
+namespace :init do
+  desc "Symbolic link files and templates into the spec/playbooks directory"
+  task :links do
+    ["files", "templates"].each do |f|
+      path = "spec/playbooks/#{f}"
+      next if File.symlink? path or !File.exist? f
+      raise "File #{path} exists and is not a symlink! Don't know what to do" if File.exist? path
+
+      File.symlink "../../#{f}", path
+    end
+  end
+
+  desc "Copy handlers into spec and Travis playbooks"
+  task :handlers do
+    playbooks = Dir.glob "spec/playbooks/*.yml"
+    playbooks << "travis-playbook.yml"
+
+    playbooks.each do |file|
+      dir = File.dirname file
+      book = YAML.load(File.read(file))
+
+      next unless book[0].has_key? "handlers"
+
+      new_includes = []
+      new_handlers = []
+
+      book[0]["handlers"].each do |handler|
+        next unless handler.has_key? "include"
+
+        new_includes << handler
+        handler_path = File.expand_path dir + "/" + handler["include"]
+        handler_content = YAML.load(File.read(handler_path))
+
+        next if handler_content.nil?
+
+        new_handlers += handler_content
+      end
+
+      book[0]["handlers"] = new_includes + new_handlers
+
+      File.write file, book.to_yaml
+    end
+  end
+
+  task :default => [:links, :handlers]
 end
 
 task :default => [:"vagrant:up", :"vagrant:provision", :"spec:all", :"vagrant:destroy"]
