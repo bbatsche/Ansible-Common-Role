@@ -4,11 +4,15 @@ dist: trusty
 
 language: generic
 
+env:
+  - ANSIBLE_VERSION="1.9"
+  - ANSIBLE_VERSION="2.0"
+
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq python-apt python-pycurl
 install:
-  - sudo pip install "ansible~=1.9"
+  - sudo pip install "ansible~=$ANSIBLE_VERSION"
 script:
   - echo localhost > inventory
 
