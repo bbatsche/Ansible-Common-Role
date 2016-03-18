@@ -5,7 +5,6 @@ dist: trusty
 language: generic
 
 env:
-  - ANSIBLE_VERSION="1.9"
   - ANSIBLE_VERSION="2.0"
 
 before_install:
