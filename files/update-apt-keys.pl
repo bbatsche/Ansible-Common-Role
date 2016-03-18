@@ -7,4 +7,3 @@
 s/.+gpg: Total number processed:\s+(\d+)\ngpg:\s+unchanged:\s(\d+)//s;
 
 print $1 - $2;
-

@@ -3,7 +3,7 @@
   script: update-apt-keys.pl
   become: yes
   register: apt_key_result
-  changed_when: apt_key_result.stdout != "0"
+  changed_when: apt_key_result.stdout | int != 0
 
 - name: Update APT
   apt: update_cache=yes upgrade=yes cache_valid_time=86400

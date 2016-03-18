@@ -1,7 +1,7 @@
 ---
 - name: Set Timezone
   copy:
-    content: '{{ timezone }}\n'
+    content: "{{ timezone }}\n"
     dest:    /etc/timezone
   become: yes
   notify: Update Timezone
