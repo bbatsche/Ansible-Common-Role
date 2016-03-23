@@ -13,12 +13,17 @@
   apt: pkg=unattended-upgrades state=present
   become: yes
 
+- name: Install Landscape Client
+  apt: pkg=landscape-client state=present
+  become: yes
+
 - name: Adjust APT Update Intervals
   lineinfile:
     dest: /etc/apt/apt.conf.d/10periodic
     line: '{{ item.key }} "{{ item.value }}";'
     regexp: "^{{ item.key }}"
     state: present
+    create: yes
   with_items:
     - { key: "APT::Periodic::AutocleanInterval",    value: 7 }
     - { key: "APT::Periodic::Update-Package-Lists", value: 1 }
