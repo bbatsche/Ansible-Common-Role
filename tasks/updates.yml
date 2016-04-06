@@ -6,7 +6,7 @@
   changed_when: apt_key_result.stdout | int != 0
 
 - name: Update APT
-  apt: update_cache=yes upgrade=yes cache_valid_time=86400
+  apt: update_cache=yes upgrade=safe cache_valid_time=86400
   become: yes
 
 - name: Install Unattended Upgrades
