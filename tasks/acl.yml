@@ -1,0 +1,16 @@
+---
+- name: Install Linux ACLs
+  apt: package=acl state=present
+  become: yes
+  notify: Remount Root
+
+- name: Create Web Admin Group
+  group: name=web-admin
+  become: yes
+
+- name: Add Console User to Web Admin Group
+  user:
+    name: "{{ console_user | default(ansible_user_id) }}"
+    groups: web-admin
+    append: yes
+  become: yes

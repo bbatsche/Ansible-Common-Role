@@ -1,13 +1,13 @@
 ---
 - hosts: all
-  remote_user: root
-  become: true
-  vars_files:
-  - defaults/main.yml
   tasks:
-  - include: tasks/main.yml
+  - include: "../../tasks/acl.yml"
+  post_tasks:
+  - name: Create Test Directory
+    file: path={{ ansible_user_dir }}/acl_test state=directory owner=root group=root
+    become: true
   handlers:
-  - include: handlers/main.yml
+  - include: "../../handlers/main.yml"
   - name: Restart Redis
     service: name=redis-server state=restarted
     become: true
