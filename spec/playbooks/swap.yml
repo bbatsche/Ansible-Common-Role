@@ -16,3 +16,6 @@
   - name: Restart Procps
     service: name=procps state=restarted
     become: true
+  - name: Remount Root
+    command: mount -o remount /
+    become: true
