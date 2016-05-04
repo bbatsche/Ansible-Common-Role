@@ -16,5 +16,5 @@
   become: yes
 
 - name: Remount Root
-  command: mount -o remount /
+  command: mount -o remount / warn=no
   become: yes
