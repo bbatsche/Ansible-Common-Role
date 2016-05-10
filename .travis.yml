@@ -18,7 +18,7 @@ install:
 
   - echo localhost ansible_connection=local ansible_user=$USER > inventory
 
-  - travis_wait ansible-playbook -i inventory travis-provision.yml
+  - travis_wait ansible-playbook -i inventory provision-playbook.yml
 script:
   # Syntax check
   - ansible-playbook -i inventory travis-playbook.yml --syntax-check
