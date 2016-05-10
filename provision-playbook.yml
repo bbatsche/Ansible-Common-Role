@@ -1,0 +1,26 @@
+---
+- hosts: all
+
+  roles:
+    - bbatsche.Base
+
+  tasks:
+  - name: Always Expand Bash Aliases
+    copy:
+      content: shopt -s expand_aliases;
+      dest: /etc/profile.d/alias.sh
+    become: yes
+
+  - name: Accept All Environment Variables from SSH
+    lineinfile:
+      line: AcceptEnv *
+      regexp: ^AcceptEnv
+      dest: /etc/ssh/sshd_config
+      validate: /usr/sbin/sshd -t -f %s
+    become: yes
+    notify: Restart SSH
+
+  handlers:
+  - name: Restart SSH
+    service: name=ssh state=restarted
+    become: yes

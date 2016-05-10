@@ -13,18 +13,22 @@ before_install:
   - sudo apt-get install -qq python-apt python-pycurl
 install:
   - sudo -H pip install "ansible~=$ANSIBLE_VERSION"
-script:
-  - echo localhost > inventory
 
+  - sudo ansible-galaxy install bbatsche.Base
+
+  - echo localhost ansible_connection=local ansible_user=$USER > inventory
+
+  - travis_wait ansible-playbook -i inventory travis-provision.yml
+script:
   # Syntax check
   - ansible-playbook -i inventory travis-playbook.yml --syntax-check
 
   # Play test
-  - ansible-playbook -i inventory travis-playbook.yml --connection=local
+  - ansible-playbook -i inventory travis-playbook.yml
 
   # Idempotence test
   - >
-    ansible-playbook -i inventory travis-playbook.yml --connection=local
+    ansible-playbook -i inventory travis-playbook.yml
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)

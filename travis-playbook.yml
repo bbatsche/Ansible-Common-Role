@@ -1,7 +1,5 @@
 ---
 - hosts: all
-  remote_user: root
-  become: yes
 
   vars_files:
     - defaults/main.yml
