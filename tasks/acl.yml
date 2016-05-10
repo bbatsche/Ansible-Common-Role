@@ -10,7 +10,7 @@
 
 - name: Add Console User to Web Admin Group
   user:
-    name: "{{ console_user | default(ansible_user_id) }}"
+    name: "{{ console_user | default(ansible_ssh_user) }}"
     groups: web-admin
     append: yes
   become: yes
