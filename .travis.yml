@@ -16,7 +16,7 @@ install:
 
   - sudo ansible-galaxy install bbatsche.Base
 
-  - echo localhost ansible_connection=local ansible_user=$USER > inventory
+  - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
 
   - travis_wait ansible-playbook -i inventory provision-playbook.yml
 script:

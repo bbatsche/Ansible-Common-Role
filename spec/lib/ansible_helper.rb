@@ -15,7 +15,7 @@ class AnsibleHelper
 
     keyPath = Shellwords.escape(sshOptions[:keys].first)
 
-    invContent = "default ansible_ssh_host=#{sshOptions[:host_name]} "
+    invContent = "default ansible_ssh_host=#{sshOptions[:host_name]} ansible_ssh_user=#{sshOptions[:user]} "
     invContent << "ansible_ssh_port=#{sshOptions[:port]} ansible_ssh_private_key_file=#{keyPath}"
 
     @inventory.write(invContent)
