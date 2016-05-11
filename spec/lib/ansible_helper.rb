@@ -7,6 +7,9 @@ class AnsibleHelper
   include Singleton
 
   def initialize
+    @inventory = File.new 'inventory'
+    @inventory.close # don't need to hold on to this, just a pointer for the file's path
+
     generateInventory unless ENV.fetch("INTEGRATION", false)
   end
 

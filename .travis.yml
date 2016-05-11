@@ -14,18 +14,18 @@ env:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq python-apt python-pycurl
-  - rvm use 2.2.3
-  - gem install bundler
+  - rvm use default
+  - sudo gem install bundler
 install:
   - sudo -H pip install "ansible~=$ANSIBLE_VERSION"
+
+  - bundle install
 
   - sudo ansible-galaxy install bbatsche.Base
 
   - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
 
   - travis_wait ansible-playbook -i inventory provision-playbook.yml
-
-  - sudo bundle install
 before_script:
   - "echo #!/bin/sh >> play.sh"
   - echo sudo su $USER -c \'ansible-playbook -i inventory travis-playbook.yml\' >> play.sh
