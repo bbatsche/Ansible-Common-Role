@@ -19,19 +19,22 @@ install:
   - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
 
   - travis_wait ansible-playbook -i inventory provision-playbook.yml
+
+  - "echo #!/bin/sh >> play.sh"
+  - echo sudo su $USER -c \'ansible-playbook -i inventory travis-playbook.yml\' >> play.sh
+  - chmod +x play.sh
 script:
   # Syntax check
   - ansible-playbook -i inventory travis-playbook.yml --syntax-check
 
   # Play test
-  - ansible-playbook -i inventory travis-playbook.yml
+  - travis_wait ./play.sh
 
   # Idempotence test
+  - ./play.sh > idempotence.out
   - >
-    ansible-playbook -i inventory travis-playbook.yml
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+    grep -q "changed=0.*failed=0" idempotence.out
+    && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
 
 notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/
