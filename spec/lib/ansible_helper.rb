@@ -7,6 +7,10 @@ class AnsibleHelper
   include Singleton
 
   def initialize
+    generateInventory unless ENV.fetch("INTEGRATION", false)
+  end
+
+  def generateInventory
     @sshConfig = Tempfile.new('ssh', Dir.tmpdir)
     @sshConfig.write(`vagrant ssh-config default`)
     @sshConfig.close
@@ -40,7 +44,7 @@ class AnsibleHelper
   end
 
   def cmd(moduleName, moduleArgs = "")
-    cmd = "ansible default -i #{@inventory.path} -m #{moduleName} -u vagrant --become"
+    cmd = "ansible default -i #{@inventory.path} -m #{moduleName} --become"
 
     if moduleArgs != ""
       moduleArgs = Shellwords.escape moduleArgs

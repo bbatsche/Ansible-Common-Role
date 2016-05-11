@@ -5,7 +5,7 @@ require_relative "spec/lib/ansible_helper"
 require_relative "spec/lib/vagrant_helper"
 
 desc "Run an arbitrary vagrant command for the test environment"
-task :vagrant, [:cmd] do |t, args|
+task :vagrant, [:cmd] => [:"vagrant:up"] do |t, args|
   exec "vagrant #{args.cmd} default"
 end
 
@@ -44,14 +44,14 @@ namespace :spec do
   tasks.each do |taskName|
     desc "Run serverspec tests for #{taskName}"
 
-    RSpec::Core::RakeTask.new(taskName.to_sym => [:"vagrant:up", :init]) do |t|
+    RSpec::Core::RakeTask.new(taskName.to_sym => [:init]) do |t|
       t.pattern = "./spec/#{taskName}-spec.rb"
     end
   end
 end
 
 desc "Run an arbitrary Ansible module in the test environment"
-task :ansible, [:module, :args] => [:"vagrant:up"] do |t, args|
+task :ansible, [:module, :args] do |t, args|
   args.with_defaults :args => ""
 
   AnsibleHelper.instance.cmd args.module, args.args
@@ -59,7 +59,7 @@ end
 
 namespace :ansible do
   desc "Run an arbitrary Ansible playbook in the test environment"
-  task :playbook, [:filename] => [:"vagrant:up"] do |t, args|
+  task :playbook, [:filename] do |t, args|
     filename = File.expand_path(args.filename, File.dirname(__FILE__))
 
     AnsibleHelper.instance.playbook filename

@@ -1,12 +1,17 @@
 require "serverspec"
 require_relative "lib/ansible_helper"
 
-options = AnsibleHelper.instance.sshOptions
+if ENV.fetch("INTEGRATION", false)
+  set :backend, :exec
+else
+  options = AnsibleHelper.instance.sshOptions
 
-set :backend, :ssh
+  set :backend, :ssh
 
-set :host,        options[:host_name]
-set :ssh_options, options
+  set :host,        options[:host_name]
+  set :ssh_options, options
+end
+
 
 # Disable sudo
 set :disable_sudo, true
