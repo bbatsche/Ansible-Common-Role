@@ -1,10 +1,27 @@
 ---
 - include: timezone.yml
+  tags: [timezone]
+
 - include: sysctl.yml
+  tags: [sysctl]
+
 - include: updates.yml
+  tags: [apt]
+
 - include: swap.yml
+  tags: [swap]
+
 - include: ruby.yml
+  tags: [ruby]
+
 - include: nodejs.yml
+  tags: [node]
+
 - include: dev-tools.yml
+  tags: [node, ruby]
+
 - include: bash-profile.yml
+  tags: [bash]
+
 - include: acl.yml
+  tags: [acl]
