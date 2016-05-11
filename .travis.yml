@@ -25,11 +25,15 @@ install:
 
   - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
 
-  - travis_wait ansible-playbook -i inventory provision-playbook.yml
+  - ansible-playbook -i inventory provision-playbook.yml --tags acl
 before_script:
   - "echo #!/bin/sh >> play.sh"
   - echo sudo su $USER -c \'ansible-playbook -i inventory travis-playbook.yml\' >> play.sh
   - chmod +x play.sh
+
+  - "echo #!/bin/sh >> spec.sh"
+  - echo sudo su $USER -c \'rake spec\' >> spec.sh
+  - chmod +x spec.sh
 script:
   # Syntax check
   - ansible-playbook -i inventory travis-playbook.yml --syntax-check
@@ -44,6 +48,6 @@ script:
     && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
 
   # Serverspec
-  - travis_wait "sudo -E su $USER -c \'rake spec\'"
+  - travis_wait spec.sh
 notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/

@@ -6,6 +6,8 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "provision-playbook.yml"
+
+    ansible.tags = ["acl", "bash", "swap"]
   end
 
   if Vagrant.has_plugin? 'vagrant-cachier'
