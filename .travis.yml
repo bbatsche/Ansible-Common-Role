@@ -5,11 +5,8 @@ dist: trusty
 language: generic
 
 env:
-  global:
-    - INTEGRATION=true
-  matrix:
-    - ANSIBLE_VERSION="1.9"
-    - ANSIBLE_VERSION="2.0"
+  - ANSIBLE_VERSION="1.9"
+  - ANSIBLE_VERSION="2.0"
 
 before_install:
   - sudo apt-get update -qq
@@ -28,11 +25,12 @@ install:
   - ansible-playbook -i inventory provision-playbook.yml --tags acl
 before_script:
   - "echo #!/bin/sh >> play.sh"
-  - echo sudo su $USER -c \'ansible-playbook -i inventory travis-playbook.yml\' >> play.sh
+  - echo "sudo -E su $USER -c 'ansible-playbook -i inventory travis-playbook.yml'" >> play.sh
   - chmod +x play.sh
 
   - "echo #!/bin/sh >> spec.sh"
-  - echo sudo su $USER -c \'rake spec\' >> spec.sh
+  - >
+    echo "sudo -E su -l $USER -c 'rvm use default; cd $TRAVIS_BUILD_DIR && rake spec'" >> spec.sh
   - chmod +x spec.sh
 script:
   # Syntax check
