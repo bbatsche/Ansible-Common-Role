@@ -7,10 +7,12 @@ class AnsibleHelper
   include Singleton
 
   def initialize
-    @inventory = File.new 'inventory'
-    @inventory.close # don't need to hold on the handle, just need a pointer for the file's path
-
-    generateInventory unless ENV.has_key?("CONTINUOUS_INTEGRATION") && ENV["CONTINUOUS_INTEGRATION"] == "true"
+    if ENV.has_key?("CONTINUOUS_INTEGRATION") && ENV["CONTINUOUS_INTEGRATION"] == "true"
+      @inventory = File.new 'inventory'
+      @inventory.close # don't need to hold on the handle, just need a pointer for the file's path
+    else
+      generateInventory
+    end
   end
 
   def generateInventory
