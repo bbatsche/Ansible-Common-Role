@@ -22,7 +22,7 @@ install:
 
   - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
 
-  - ansible-playbook -i inventory provision-playbook.yml --tags acl,untagged
+  - ansible-playbook -i inventory provision-playbook.yml --skip-tags timezone,sysctl,apt,ruby,node,bash,swap
 before_script:
   - "echo #!/bin/sh >> play.sh"
   - echo "sudo -E su $USER -c 'ansible-playbook -i inventory travis-playbook.yml'" >> play.sh
