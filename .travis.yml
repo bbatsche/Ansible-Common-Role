@@ -46,6 +46,6 @@ script:
     && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
 
   # Serverspec
-  - travis_wait ./spec.sh
+  # - travis_wait ./spec.sh
 notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/
