@@ -22,4 +22,4 @@
   shell: sleep 1; pkill -u {{ ansible_ssh_user }} sshd
   async: 3
   poll: 2
-  when: group_added | changed
+  when: group_added | changed and ansible_connection | default('smart') != 'local'
