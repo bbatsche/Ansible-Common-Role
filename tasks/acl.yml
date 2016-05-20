@@ -14,3 +14,12 @@
     groups: web-admin
     append: yes
   become: yes
+  register: group_added
+
+# Woo! Kinda sorta super kludgy solution to refreshing SSH connection, but like holy crap it actually works!
+# http://stackoverflow.com/questions/26677064/create-and-use-group-without-restart/37337848#37337848
+- name: Restart SSH
+  shell: sleep 1; pkill -u {{ ansible_ssh_user }} sshd
+  async: 3
+  poll: 2
+  when: group_added | changed
