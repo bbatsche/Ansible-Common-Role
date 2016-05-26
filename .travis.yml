@@ -5,8 +5,13 @@ dist: trusty
 language: generic
 
 env:
-  - ANSIBLE_VERSION="1.9"
-  - ANSIBLE_VERSION="2.0"
+  global:
+    - ANSIBLE_LOCAL_TEMP=/tmp/ansible
+    - ANSIBLE_REMOTE_TEMP=/tmp/ansible
+  matrix:
+    - ANSIBLE_VERSION="1.9"
+    - ANSIBLE_VERSION="2.0"
+    - ANSIBLE_VERSION="2.1"
 
 before_install:
   - sudo apt-get update -qq
@@ -14,7 +19,7 @@ before_install:
   - rvm use default
   - sudo gem install bundler
 install:
-  - sudo -H pip install "ansible~=$ANSIBLE_VERSION"
+  - sudo -H pip install ansible==${ANSIBLE_VERSION}.*
 
   - bundle install
 
