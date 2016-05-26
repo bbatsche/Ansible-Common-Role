@@ -19,7 +19,7 @@ before_install:
   - rvm use default
   - sudo gem install bundler
 install:
-  - sudo -H pip install ansible=${ANSIBLE_VERSION}.*
+  - sudo -H pip install ansible==${ANSIBLE_VERSION}.*
 
   - bundle install
 
