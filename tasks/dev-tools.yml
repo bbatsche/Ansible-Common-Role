@@ -1,7 +1,11 @@
 ---
-- name: Install Git
-  apt: package=git state=present
+- name: Install Git, Beanstalk, & Supervisor
+  apt: name={{ item }} state=present
   become: yes
+  with_items:
+    - git
+    - beanstalkd
+    - supervisor
 
 - name: Install Bower, Gulp, & Grunt
   npm: name={{ item }} global=yes production=yes state=present

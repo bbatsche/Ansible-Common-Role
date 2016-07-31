@@ -8,26 +8,51 @@ RSpec.configure do |config|
 end
 
 describe command("git --version") do
-  its(:stdout) { should match /git version \d+\.\d+\.\d+/ }
-  its(:exit_status) { should eq 0 }
+  it "has git installed" do
+    expect(subject.stdout).to match /git version \d+\.\d+\.\d+/
+    expect(subject.exit_status).to eq 0
+  end
+end
+
+describe command("echo 'stats\r\n' | nc localhost 11300") do
+  it "has beanstalk installed and running" do
+    expect(subject.stdout).to match /^OK \d+/
+  end
+end
+
+describe command("supervisorctl version") do
+  let(:disable_sudo) { false }
+
+  it "has supervisor installed" do
+    expect(subject.stdout).to match /^3\.\d.*/
+    expect(subject.exit_status).to eq 0
+  end
 end
 
 describe command("bower --version") do
-  its(:stdout) { should match /\d+\.\d+\.\d+/ }
-  its(:exit_status) { should eq 0 }
+  it "has bower installed" do
+    expect(subject.stdout).to match /\d+\.\d+\.\d+/
+    expect(subject.exit_status).to eq 0
+  end
 end
 
 describe command("gulp --version") do
-  its(:stdout) { should match /CLI version \d+\.\d+\.\d+/ }
-  its(:exit_status) { should eq 0 }
+  it "has gulp installed" do
+    expect(subject.stdout).to match /CLI version \d+\.\d+\.\d+/
+    expect(subject.exit_status).to eq 0
+  end
 end
 
 describe command("grunt --version") do
-  its(:stdout) { should match /grunt-cli v\d+\.\d+\.\d+/ }
-  its(:exit_status) { should eq 0 }
+  it "has grunt installed" do
+    expect(subject.stdout).to match /grunt-cli v\d+\.\d+\.\d+/
+    expect(subject.exit_status).to eq 0
+  end
 end
 
 describe command("sass --version") do
-  its(:stdout) { should match /Sass \d+\.\d+\.\d+/ }
-  its(:exit_status) { should eq 0 }
+  it "has sass installed" do
+    expect(subject.stdout).to match /Sass \d+\.\d+\.\d+/
+    expect(subject.exit_status).to eq 0
+  end
 end
