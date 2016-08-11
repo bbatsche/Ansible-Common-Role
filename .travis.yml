@@ -5,13 +5,9 @@ dist: trusty
 language: generic
 
 env:
-  global:
-    - ANSIBLE_LOCAL_TEMP=/tmp/ansible
-    - ANSIBLE_REMOTE_TEMP=/tmp/ansible
-  matrix:
-    - ANSIBLE_VERSION="1.9"
-    - ANSIBLE_VERSION="2.0"
-    - ANSIBLE_VERSION="2.1"
+  - ANSIBLE_VERSION="1.9"
+  - ANSIBLE_VERSION="2.0"
+  - ANSIBLE_VERSION="2.1"
 
 before_install:
   - sudo apt-get update -qq
@@ -26,6 +22,9 @@ install:
   - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
 
   - ansible-playbook -i inventory provision-playbook.yml
+
+  - mkdir -p $HOME/.ansible
+  - sudo chown -R $USER:$USER $HOME/.ansible
 before_script:
   - "echo #!/bin/sh >> play.sh"
   - echo "sudo -E su $USER -c 'ansible-playbook -i inventory travis-playbook.yml'" >> play.sh
