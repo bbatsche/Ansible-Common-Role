@@ -23,6 +23,7 @@ install:
 
   - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
 
+  - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
 
   - ansible-playbook -i inventory provision-playbook.yml --skip-tags timezone,sysctl,apt,ruby,node,bash,swap
