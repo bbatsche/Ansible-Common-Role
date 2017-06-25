@@ -3,7 +3,7 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/sample-playbook.yml"
+    AnsibleHelper.instance.playbook "playbooks/sample-playbook.yml", ENV["TARGET_HOST"]
   end
 end
 
@@ -11,4 +11,28 @@ describe command("echo hello") do
   its(:stdout) { should match /hello/ }
 
   its(:exit_status) { should eq 0 }
+end
+
+describe command("lsb_release -a") do
+  it "is Ubuntu" do
+    expect(subject.stdout).to match /^Distributor ID:\s+Ubuntu$/
+  end
+
+  it "is an LTS release" do
+    expect(subject.stdout).to match /^Description:\s+.+LTS$/
+  end
+
+  if os[:release] == "14.04"
+    it "is Trusty Tahr" do
+      expect(subject.stdout).to match /^Release:\s+14.04$/
+      expect(subject.stdout).to match /^Codename:\s+trusty$/
+    end
+  end
+
+  if os[:release] == "16.04"
+    it "is Xenial Xerus" do
+      expect(subject.stdout).to match /^Release:\s+16.04$/
+      expect(subject.stdout).to match /^Codename:\s+xenial$/
+    end
+  end
 end

@@ -2,6 +2,7 @@ require 'net/ssh'
 require 'tempfile'
 require 'singleton'
 require 'shellwords'
+require_relative 'vagrant_helper'
 
 class AnsibleHelper
   include Singleton
@@ -17,29 +18,35 @@ class AnsibleHelper
 
   def generateInventory
     @sshConfig = Tempfile.new('ssh', Dir.tmpdir)
-    @sshConfig.write(`vagrant ssh-config default`)
+    @sshConfig.write(`vagrant ssh-config`)
     @sshConfig.close
 
+    invContent = "";
+
+    VagrantHelper::MACHINES.values.each do |vm|
+      opts = sshOptions vm
+      keyPath = Shellwords.escape(opts[:keys].first)
+
+      invContent << "#{vm} ansible_ssh_host=#{opts[:host_name]} ansible_ssh_user=#{opts[:user]} "
+      invContent << "ansible_ssh_port=#{opts[:port]} ansible_ssh_private_key_file=#{keyPath}\n"
+    end
+
     @inventory = Tempfile.new('inventory', Dir.tmpdir)
-
-    keyPath = Shellwords.escape(sshOptions[:keys].first)
-
-    invContent = "default ansible_ssh_host=#{sshOptions[:host_name]} ansible_ssh_user=#{sshOptions[:user]} "
-    invContent << "ansible_ssh_port=#{sshOptions[:port]} ansible_ssh_private_key_file=#{keyPath}"
-
     @inventory.write(invContent)
     @inventory.close
   end
 
-  def sshOptions
-    Net::SSH::Config.for("default", [@sshConfig.path])
+  def sshOptions vm
+    Net::SSH::Config.for(vm, [@sshConfig.path])
   end
 
-  def playbook(playbookFile, extraVars = {})
+  def playbook(playbookFile, host = nil, extraVars = {})
     specDir = File.expand_path(File.dirname(__FILE__) + "/../")
     playbookFile = Shellwords.escape(File.expand_path(playbookFile, specDir))
 
-    cmd = "ansible-playbook -i #{@inventory.path} #{playbookFile}"
+    cmd = "ansible-playbook -i #{@inventory.path}"
+    cmd << " -l #{host}" unless host.nil?
+    cmd << " #{playbookFile}"
 
     extraVars.each do |key, value|
       cmd << " -e \"#{key.to_s}=#{value}\""
@@ -49,7 +56,7 @@ class AnsibleHelper
   end
 
   def cmd(moduleName, moduleArgs = "")
-    cmd = "ansible default -i #{@inventory.path} -m #{moduleName} --become"
+    cmd = "ansible -i #{@inventory.path} -m #{moduleName} --become"
 
     if moduleArgs != ""
       moduleArgs = Shellwords.escape moduleArgs

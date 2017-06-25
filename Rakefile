@@ -6,23 +6,23 @@ require_relative "spec/lib/vagrant_helper"
 
 desc "Run an arbitrary vagrant command for the test environment"
 task :vagrant, [:cmd] => [:"vagrant:up"] do |t, args|
-  exec "vagrant #{args.cmd} default"
+  exec "vagrant #{args.cmd}"
 end
 
 namespace :vagrant do
   desc "Boot the test environment (w/o provisioning)"
   task :up do
-    VagrantHelper.instance.cmd("Booting", "up --provider=virtualbox --no-color --no-provision")
+    VagrantHelper.instance.cmd(:up, ["--provider=virtualbox", "--no-color", "--no-provision"])
   end
 
   desc "Provision the test environment"
   task :provision do
-    VagrantHelper.instance.cmd("Provisioning", "provision")
+    VagrantHelper.instance.cmd :provision
   end
 
   desc "Destroy the test environment"
   task :destroy do
-    VagrantHelper.instance.cmd("Destroying", "destroy --force")
+    VagrantHelper.instance.cmd(:destroy, ["--force"])
   end
 end
 
@@ -32,19 +32,23 @@ namespace :spec do
   tasks = []
 
   Dir.glob('./spec/*-spec.rb').each do |file|
-    spec = File.basename file
+    VagrantHelper::MACHINES.keys.each do |vm|
+      spec = File.basename file
 
-    # Trim off "-spec.rb" and add to list
-    tasks << spec[0..-9]
+      # Trim off "-spec.rb" and add to list
+      tasks << "#{vm.to_s}-#{spec[0..-9]}"
+    end
   end
 
   task :all     => tasks
   task :default => :all
 
-  tasks.each do |taskName|
-    desc "Run serverspec tests for #{taskName}"
+  tasks.each do |fullName|
+    vm, taskName = fullName.split "-"
 
-    RSpec::Core::RakeTask.new(taskName.to_sym => [:init]) do |t|
+    desc "Run serverspec tests for #{taskName} against #{vm}"
+    RSpec::Core::RakeTask.new(fullName.to_sym => [:init]) do |t|
+      ENV["TARGET_HOST"] = VagrantHelper::MACHINES[vm.to_sym]
       t.pattern = "./spec/#{taskName}-spec.rb"
     end
   end
