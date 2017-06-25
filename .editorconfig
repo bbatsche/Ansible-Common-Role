@@ -1,0 +1,13 @@
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+indent_style = space
+
+[*.{yml,rb}]
+indent_size = 2
+
+[{Rakefile,Vagrantfile}]
+indent_size = 2

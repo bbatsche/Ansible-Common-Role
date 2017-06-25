@@ -1,23 +1,36 @@
 ---
 - hosts: all
+  gather_facts: false
+
+  pre_tasks:
+    - name: Install python2 for Ansible
+      raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+      become: yes
+      register: output
+      changed_when:
+        - output.stdout != ""
+        - output.stdout != "\r\n"
+
+    - name: Gathering Facts
+      setup:
 
   tasks:
-  - name: Always Expand Bash Aliases
-    copy:
-      content: shopt -s expand_aliases;
-      dest: /etc/profile.d/alias.sh
-    become: yes
+    - name: Always Expand Bash Aliases
+      copy:
+        content: shopt -s expand_aliases;
+        dest: /etc/profile.d/alias.sh
+      become: yes
 
-  - name: Accept All Environment Variables from SSH
-    lineinfile:
-      line: AcceptEnv *
-      regexp: ^AcceptEnv
-      dest: /etc/ssh/sshd_config
-      validate: /usr/sbin/sshd -t -f %s
-    become: yes
-    notify: Restart SSH
+    - name: Accept All Environment Variables from SSH
+      lineinfile:
+        line: AcceptEnv *
+        regexp: ^AcceptEnv
+        dest: /etc/ssh/sshd_config
+        validate: /usr/sbin/sshd -t -f %s
+      become: yes
+      notify: Restart SSH
 
   handlers:
-  - name: Restart SSH
-    service: name=ssh state=restarted
-    become: yes
+    - name: Restart SSH
+      service: name=ssh state=restarted
+      become: yes

@@ -5,9 +5,10 @@ dist: trusty
 language: generic
 
 env:
-  - ANSIBLE_VERSION="1.9"
   - ANSIBLE_VERSION="2.0"
   - ANSIBLE_VERSION="2.1"
+  - ANSIBLE_VERSION="2.2"
+  - ANSIBLE_VERSION="2.3"
 
 before_install:
   - sudo apt-get update -qq
