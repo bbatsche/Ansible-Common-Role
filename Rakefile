@@ -31,27 +31,30 @@ task :spec => "spec:all"
 namespace :spec do
   tasks = []
 
-  Dir.glob('./spec/*-spec.rb').each do |file|
-    VagrantHelper::MACHINES.keys.each do |vm|
+  VagrantHelper::MACHINES.keys.each do |vm|
+    vmTasks = []
+
+    Dir.glob('./spec/*-spec.rb').each do |file|
       spec = File.basename file
 
       # Trim off "-spec.rb" and add to list
-      tasks << "#{vm.to_s}-#{spec[0..-9]}"
+      taskName = spec[0..-9]
+      fullName = "#{vm.to_s}:#{taskName}"
+      vmTasks << fullName
+
+      desc "Run serverspec tests for #{taskName} against #{vm.to_s}"
+      RSpec::Core::RakeTask.new(fullName.to_sym => [:init]) do |t|
+        ENV["TARGET_HOST"] = VagrantHelper::MACHINES[vm]
+        t.pattern = "./spec/#{taskName}-spec.rb"
+      end
     end
+
+    task vm => vmTasks
+    tasks.concat vmTasks
   end
 
   task :all     => tasks
   task :default => :all
-
-  tasks.each do |fullName|
-    vm, taskName = fullName.split "-"
-
-    desc "Run serverspec tests for #{taskName} against #{vm}"
-    RSpec::Core::RakeTask.new(fullName.to_sym => [:init]) do |t|
-      ENV["TARGET_HOST"] = VagrantHelper::MACHINES[vm.to_sym]
-      t.pattern = "./spec/#{taskName}-spec.rb"
-    end
-  end
 end
 
 desc "Run an arbitrary Ansible module in the test environment"
