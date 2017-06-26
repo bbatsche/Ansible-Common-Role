@@ -4,11 +4,6 @@ require "rspec/core/rake_task"
 require_relative "spec/lib/ansible_helper"
 require_relative "spec/lib/vagrant_helper"
 
-desc "Run an arbitrary vagrant command for the test environment"
-task :vagrant, [:cmd] => [:"vagrant:up"] do |t, args|
-  exec "vagrant #{args.cmd}"
-end
-
 namespace :vagrant do
   desc "Boot the test environment (w/o provisioning)"
   task :up do
@@ -31,7 +26,7 @@ task :spec => "spec:all"
 namespace :spec do
   tasks = []
 
-  VagrantHelper::MACHINES.keys.each do |vm|
+  VagrantHelper::MACHINES.each_key do |vm|
     vmTasks = []
 
     Dir.glob('./spec/*-spec.rb').each do |file|
@@ -57,21 +52,24 @@ namespace :spec do
   task :default => :all
 end
 
-desc "Run an arbitrary Ansible module in the test environment"
-task :ansible, [:module, :args] do |t, args|
-  args.with_defaults :args => ""
+VagrantHelper::MACHINES.each do |name, vm|
+  desc "Run an Ansible module in the #{name.to_s} VM"
+  task :"ansible:#{name.to_s}", [:module, :args] do |t, args|
+    args.with_defaults :args => ""
 
-  AnsibleHelper.instance.cmd args.module, args.args
-end
+    AnsibleHelper.instance.cmd(args.module, vm, args.args)
+  end
 
-namespace :ansible do
-  desc "Run an arbitrary Ansible playbook in the test environment"
-  task :playbook, [:filename] do |t, args|
-    filename = File.expand_path(args.filename, File.dirname(__FILE__))
+  namespace :"ansible:#{name.to_s}" do
+    desc "Run an Ansible playbook in the #{name.to_s} VM"
+    task :playbook, [:filename] do |t, args|
+      filename = File.expand_path(args.filename, File.dirname(__FILE__))
 
-    AnsibleHelper.instance.playbook filename
+      AnsibleHelper.instance.playbook(filename, vm)
+    end
   end
 end
+
 
 task :init => "init:default"
 

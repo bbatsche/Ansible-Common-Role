@@ -18,31 +18,37 @@ class AnsibleHelper
 
   def generateInventory
     @sshConfig = Tempfile.new('ssh', Dir.tmpdir)
-    @sshConfig.write(`vagrant ssh-config`)
+    @sshConfig.write `vagrant ssh-config`
     @sshConfig.close
 
     invContent = "";
 
-    VagrantHelper::MACHINES.values.each do |vm|
+    VagrantHelper::MACHINES.each_value do |vm|
       opts = sshOptions vm
-      keyPath = Shellwords.escape(opts[:keys].first)
+      keyPath = Shellwords.escape opts[:keys].first
 
       invContent << "#{vm} ansible_ssh_host=#{opts[:host_name]} ansible_ssh_user=#{opts[:user]} "
       invContent << "ansible_ssh_port=#{opts[:port]} ansible_ssh_private_key_file=#{keyPath}\n"
     end
 
     @inventory = Tempfile.new('inventory', Dir.tmpdir)
-    @inventory.write(invContent)
+    @inventory.write invContent
     @inventory.close
   end
 
-  def sshOptions vm
-    Net::SSH::Config.for(vm, [@sshConfig.path])
+  def sshOptions host = nil
+    host = resolveHost host
+    raise ArgumentError.new('Missing argument "host"') if host.nil?
+
+    Net::SSH::Config.for(host, [@sshConfig.path])
   end
 
   def playbook(playbookFile, host = nil, extraVars = {})
-    specDir = File.expand_path(File.dirname(__FILE__) + "/../")
+    specDir      = File.expand_path(File.dirname(__FILE__) + "/../")
     playbookFile = Shellwords.escape(File.expand_path(playbookFile, specDir))
+    host         = resolveHost host
+
+    raise ArgumentError.new('Missing argument "host"') if host.nil?
 
     cmd = "ansible-playbook -i #{@inventory.path}"
     cmd << " -l #{host}" unless host.nil?
@@ -55,8 +61,11 @@ class AnsibleHelper
     system cmd
   end
 
-  def cmd(moduleName, moduleArgs = "")
-    cmd = "ansible -i #{@inventory.path} -m #{moduleName} --become"
+  def cmd(moduleName, host = nil, moduleArgs = "")
+    host = resolveHost host
+    host = "all" if host.nil?
+
+    cmd = "ansible #{host} -i #{@inventory.path} -m #{moduleName} --become"
 
     if moduleArgs != ""
       moduleArgs = Shellwords.escape moduleArgs
@@ -65,5 +74,10 @@ class AnsibleHelper
     end
 
     system cmd
+  end
+
+  def resolveHost host = nil
+    return host unless host.nil?
+    return ENV["TARGET_HOST"] if ENV.has_key? "TARGET_HOST"
   end
 end
