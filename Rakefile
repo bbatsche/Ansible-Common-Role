@@ -70,7 +70,6 @@ VagrantHelper::MACHINES.each do |name, vm|
   end
 end
 
-
 task :init => "init:default"
 
 namespace :init do

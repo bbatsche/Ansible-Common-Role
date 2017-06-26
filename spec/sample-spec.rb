@@ -10,7 +10,7 @@ end
 describe command("echo hello") do
   its(:stdout) { should match /hello/ }
 
-  include_examples "no_errors"
+  include_examples "no errors"
 end
 
 describe command("lsb_release -a") do
