@@ -70,6 +70,5 @@ There are several rake tasks for interacting with the test environment, includin
 - `rake vagrant:up` &mdash; Boot the test environment (_**Note:** This will **not** run any provisioning tasks._)
 - `rake vagrant:provision` &mdash; Provision the test environment
 - `rake vagrant:destroy` &mdash; Destroy the test environment
-- `rake vagrant[cmd]` &mdash; Run some arbitrary Vagrant command in the test environment. For example, to log in to the test environment run: `rake vagrant[ssh]`
 
 These specs are **not** meant to test for idempotence. They are meant to check that the specified tasks perform their expected steps. Idempotency can be tested independently as a form of integration testing.
