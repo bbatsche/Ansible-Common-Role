@@ -1,14 +1,13 @@
 require "serverspec"
 require_relative "lib/ansible_helper"
+require_relative "shared/no_errors"
 
 if ENV.has_key?("CONTINUOUS_INTEGRATION") && ENV["CONTINUOUS_INTEGRATION"] == "true"
   set :backend, :exec
 else
-  options = AnsibleHelper.instance.sshOptions ENV['TARGET_HOST']
-
   set :backend, :ssh
 
-  set :ssh_options, options
+  set :ssh_options, AnsibleHelper.instance.sshOptions
 end
 
 
