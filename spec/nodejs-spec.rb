@@ -1,22 +1,25 @@
 require_relative "lib/ansible_helper"
 require_relative "bootstrap"
+require_relative "shared/nodejs"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook 'playbooks/nodejs.yml'
+    AnsibleHelper.instance.playbook "playbooks/nodejs.yml"
   end
 end
 
-describe command("node -e \"console.log('node installed');\"") do
-  its(:stdout) { should eq "node installed\n" }
-  its(:exit_status) { should eq 0 }
+describe "node" do
+  include_examples("nodejs", "node")
 end
 
-describe command("nodejs -e \"console.log('node installed');\"") do
-  its(:stdout) { should eq "node installed\n" }
-  its(:exit_status) { should eq 0 }
+describe "nodejs" do
+  include_examples("nodejs", "nodejs")
 end
 
-describe command("npm version") do
-  its(:exit_status) { should eq 0 }
+describe command("npm --version") do
+  it "should be a correct version" do
+    expect(subject.stdout).to match /^\d+\.\d+\.\d+$/
+  end
+
+  include_examples "no errors"
 end

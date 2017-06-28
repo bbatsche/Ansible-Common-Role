@@ -1,8 +1,30 @@
 ---
-- name: Install System Node
-  apt: name={{ item }} state=present
+- name: Install Pip
+  apt: name=python-pip state=present
+  become: yes
+
+- name: Install Python SSL3 Dependencies
+  pip: name={{ item }} state=present
   become: yes
   with_items:
-    - nodejs
-    - nodejs-legacy
-    - npm
+    - urllib3
+    - pyOpenSSL
+    - ndg-httpsclient
+    - pyasn1
+
+- name: Add Node APT Key
+  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key state=present
+  become: yes
+
+- name: Add Node APT Repositories
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+  become: yes
+  with_items:
+    - deb https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main
+    - deb-src https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main
+
+- name: Install Node
+  apt: name=nodejs state=present
+  become: yes
