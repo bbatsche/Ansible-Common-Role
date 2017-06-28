@@ -3,56 +3,64 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook 'playbooks/dev-tools.yml'
+    AnsibleHelper.instance.playbook "playbooks/dev-tools.yml"
   end
 end
 
 describe command("git --version") do
-  it "has git installed" do
+  it "git is installed" do
     expect(subject.stdout).to match /git version \d+\.\d+\.\d+/
-    expect(subject.exit_status).to eq 0
   end
+  include_examples "no errors"
 end
 
-describe command("echo 'stats\r\n' | nc localhost 11300") do
-  it "has beanstalk installed and running" do
+describe command('echo -e "stats\\r" | nc localhost 11300') do
+  it "beanstalkd is running" do
     expect(subject.stdout).to match /^OK \d+/
   end
+  include_examples "no errors"
 end
 
 describe command("supervisorctl version") do
   let(:disable_sudo) { false }
 
-  it "has supervisor installed" do
-    expect(subject.stdout).to match /^3\.\d.*/
-    expect(subject.exit_status).to eq 0
+  it "supervisor is installed" do
+    expect(subject.stdout).to match /^\d+\.\d\.\d+$/
   end
+  include_examples "no errors"
 end
 
 describe command("bower --version") do
-  it "has bower installed" do
-    expect(subject.stdout).to match /\d+\.\d+\.\d+/
-    expect(subject.exit_status).to eq 0
+  it "bower is isntalled" do
+    expect(subject.stdout).to match /^\d+\.\d+\.\d+$/
   end
+  include_examples "no errors"
 end
 
 describe command("gulp --version") do
-  it "has gulp installed" do
-    expect(subject.stdout).to match /CLI version \d+\.\d+\.\d+/
-    expect(subject.exit_status).to eq 0
+  it "gulp is installed" do
+    expect(subject.stdout).to match /CLI version \d+\.\d+\.\d+$/
   end
+  include_examples "no errors"
 end
 
 describe command("grunt --version") do
-  it "has grunt installed" do
-    expect(subject.stdout).to match /grunt-cli v\d+\.\d+\.\d+/
-    expect(subject.exit_status).to eq 0
+  it "grunt is installed" do
+    expect(subject.stdout).to match /^grunt-cli v\d+\.\d+\.\d+$/
   end
+  include_examples "no errors"
+end
+
+describe command("yarn --version") do
+  it "yarn is installed" do
+    expect(subject.stdout).to match /^\d+\.\d+\.\d+$/
+  end
+  include_examples "no errors"
 end
 
 describe command("sass --version") do
-  it "has sass installed" do
-    expect(subject.stdout).to match /Sass \d+\.\d+\.\d+/
-    expect(subject.exit_status).to eq 0
+  it "sass is installed" do
+    expect(subject.stdout).to match /^Sass \d+\.\d+\.\d+/
   end
+  include_examples "no errors"
 end
