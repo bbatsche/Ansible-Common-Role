@@ -1,15 +1,34 @@
 ---
 - hosts: all
+
+  post_tasks:
+    - name: Create Mocks Directory
+      file:
+        name: /tmp/mocks
+        state: directory
+        mode: 0777
+    - name: Mock regular file for spec
+      command: dd if=/dev/zero of=/tmp/mocks/test bs=1024 count=1
+      become: yes
+    - name: Mock hidden file for spec
+      command: dd if=/dev/zero of=/tmp/mocks/.test bs=1024 count=1024
+      become: yes
+    - name: Set permissions for mock file
+      file:
+        name: /tmp/mocks/test
+        mode: 0644
+        owner: root
+        group: root
+        state: file
+      become: yes
+    - name: Set permissions for hidden file
+      file:
+        name: /tmp/mocks/.test
+        mode: 0755
+        owner: root
+        group: root
+        state: file
+      become: yes
+
   tasks:
     - include: ../../tasks/bash-profile.yml
-
-    - name: Mock files for spec
-      command: dd if=/dev/zero of={{ ansible_user_dir }}/test bs=1024 count=1
-    - name: Mock files for spec
-      command: dd if=/dev/zero of={{ ansible_user_dir }}/.test bs=1024 count=1024
-    - name: Mock files for spec
-      file: name={{ ansible_user_dir }}/test mode=0644 state=file
-    - name: Mock files for spec
-      file: name={{ ansible_user_dir }}/.test mode=0755 state=file
-    - name: Mock files for spec
-      file: name={{ ansible_user_dir }}/test_dir mode=0755 state=directory
