@@ -1,51 +1,34 @@
 require_relative "lib/ansible_helper"
 require_relative "bootstrap"
+require_relative "shared/ruby"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook 'playbooks/ruby.yml'
+    AnsibleHelper.instance.playbook "playbooks/ruby.yml"
   end
 end
 
-describe command("ruby -e \"puts 'ruby installed'\"") do
-  its(:stdout) { should eq "ruby installed\n" }
-  its(:exit_status) { should eq 0 }
+describe "ruby" do
+  rubyCmd = if os[:release] == "14.04" then "ruby2.0" else "ruby" end
+
+  include_examples("ruby::ruby", rubyCmd)
 end
 
-describe command("ruby2.0 -e \"puts 'ruby installed'\"") do
-  its(:stdout) { should eq "ruby installed\n" }
-  its(:exit_status) { should eq 0 }
-end
+describe "gem" do
+  gemCmd = if os[:release] == "14.04" then "gem2.0" else "gem" end
+  include_examples("ruby::gem", gemCmd)
 
-describe command("ruby1.9.1 --version") do
-  its(:stdout) { should match /\b1\.9\.\d+/ }
-  its(:exit_status) { should eq 0 }
-end
+  describe command("#{gemCmd} install bundler") do
+    let(:disable_sudo) { false }
 
-describe command("ruby2.0 --version") do
-  its(:stdout) { should match /\b2\.0\.\d+/ }
-  its(:exit_status) { should eq 0 }
-end
+    it "should install gems" do
+      expect(subject.stdout).to match /^1 gem installed$/
+    end
 
-describe command("gem --version") do
-  its(:exit_status) { should eq 0 }
-end
+    it "should install documentation" do
+      expect(subject.stdout).to match /^Parsing documentation/
+    end
 
-describe command("gem1.9.1 --version") do
-  its(:stdout) { should match /\b1\.\d+\.\d+/ }
-  its(:exit_status) { should eq 0 }
-end
-
-describe command("gem2.0 --version") do
-  its(:stdout) { should match /\b2\.\d+\.\d+/ }
-  its(:exit_status) { should eq 0 }
-end
-
-describe command("sudo gem install sass") do
-  its(:stdout) { should match /1 gem installed/ }
-
-  its(:stdout) { should match /Installing ri documentation/ }
-  its(:stdout) { should match /Installing RDoc documentation/ }
-
-  its(:exit_status) { should eq 0 }
+    include_examples "no errors"
+  end
 end
