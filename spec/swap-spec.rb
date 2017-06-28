@@ -3,14 +3,18 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook 'playbooks/swap.yml'
+    AnsibleHelper.instance.playbook("playbooks/swap.yml", ENV["TARGET_HOST"], { swap_mb: 1024, swap_path: "/swap" })
   end
 end
 
 describe command("swapon -s") do
-  its(:stdout) { should match /^.+\s+(file|partition)\s+\d+/ }
+  it "has the swap file enabled" do
+    expect(subject.stdout).to match /^\/swap\s+(file|partition)\s+\d+/
+  end
 end
 
 describe file("/etc/fstab") do
-  its(:content) { should match /^.+\s+none\s+swap\s+(sw(ap)?|(defaults)).*\s+0\s+0\s*$/ }
+  it "has the swap file included" do
+    expect(subject.content).to match /^\/swap\s+none\s+swap\s+(sw(ap)?|(defaults))/
+  end
 end

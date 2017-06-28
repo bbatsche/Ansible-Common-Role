@@ -1,23 +1,26 @@
 ---
 - name: Create Swap File
-  command: fallocate -l 1G /swap
+  command: fallocate -l {{ swap_mb }}M {{ swap_path }}
   become: yes
-  when: ansible_swaptotal_mb < 1023
+  when: ansible_swaptotal_mb + 1 < swap_mb | int
+  register: create_swap
 
 - name: Secure Swap File
-  file: name=/swap owner=root group=root mode=0600
+  file: name={{ swap_path }} owner=root group=root mode=0600
   become: yes
+  when: create_swap|changed
 
 - name: Make Swap
-  command: mkswap /swap
+  command: mkswap {{ swap_path }}
   become: yes
-  when: ansible_swaptotal_mb < 1023
+  when: create_swap|changed
   notify: Turn on Swap
 
 - name: Add Swap to Fstab
   lineinfile:
     dest:   /etc/fstab
     regexp: "swap"
-    line:   "/swap none swap sw 0 0"
+    line:   "{{ swap_path }} none swap sw 0 0"
     state:  present
   become: yes
+  when: create_swap|changed
