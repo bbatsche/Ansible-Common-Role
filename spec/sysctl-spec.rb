@@ -3,11 +3,41 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook 'playbooks/sysctl.yml'
+    AnsibleHelper.instance.playbook("playbooks/sysctl.yml", ENV["TARGET_HOST"], {shmmax_percent: 25, shmall_percent: 25})
   end
 end
 
-# Assert that we have upped the number of PID's, and thus our config was loaded successfully.
 describe linux_kernel_parameter("kernel.pid_max") do
-  its(:value) { should be > 32768 }
+  it "should be increased" do
+    expect(subject.value).to be > 32768
+  end
+end
+
+describe linux_kernel_parameter("fs.file-max") do
+  # convert to MB
+  totalMem = host_inventory["memory"]["total"].to_i / 1024
+
+  it "should be 256 for every 4MB of RAM" do
+    expect(subject.value).to be_within(100).of((totalMem / 4) * 256)
+  end
+end
+
+describe linux_kernel_parameter("kernel.shmmax") do
+  # convert to bytes
+  totalMem = host_inventory["memory"]["total"].to_i * 1024
+
+  it "should be 1/4 of total RAM" do
+    # within 1% of total mem
+    expect(subject.value).to be_within(0.01 * totalMem).of(totalMem / 4)
+  end
+end
+
+describe linux_kernel_parameter("kernel.shmall") do
+  # convert to pages
+  totalMem = host_inventory["memory"]["total"].to_i * 1024 / 4096
+
+  it "should be 1/4 of total RAM" do
+    # within 1% of total mem
+    expect(subject.value).to be_within(0.01 * totalMem).of(totalMem / 4)
+  end
 end

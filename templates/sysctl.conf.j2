@@ -73,11 +73,11 @@ kernel.kptr_restrict = 1
 ###
 
 # Increase size of file handles and inode cache
-fs.file-max = {{ ansible_memtotal_mb / 4 * 256 | int }}
+fs.file-max = {{ (ansible_memtotal_mb * 256 / 4) | int }}
 
 # Do less swapping
-vm.swappiness = 30
-vm.dirty_ratio = 30
+vm.swappiness = 10
+vm.dirty_ratio = 15
 vm.dirty_background_ratio = 5
 
 # specifies the minimum virtual address that a process is allowed to mmap
@@ -87,9 +87,10 @@ vm.mmap_min_addr = 4096
 vm.overcommit_ratio = 50
 vm.overcommit_memory = 0
 
-# Set maximum amount of memory allocated to shm to 256MB
-kernel.shmmax = 268435456
-kernel.shmall = 268435456
+# Set maximum amount of memory allocated to shm to {{ shmmax_percent }}% of system memory
+kernel.shmmax = {{ ((ansible_memtotal_mb * 1024 * 1024) * (shmmax_percent|int / 100)) | int }}
+# Set total amount of shared memory to {{ shmall_percent }}% of system memory
+kernel.shmall = {{ ((ansible_memtotal_mb * 1024 * 1024) * (shmall_percent|int / 100) / 4096) | int}}
 
 # Keep at least 32MB of free RAM space available
 vm.min_free_kbytes = 32768

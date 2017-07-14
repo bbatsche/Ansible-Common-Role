@@ -1,5 +1,5 @@
 ---
 - name: Tune Kernel Security and Network Performance
-  template: src=sysctl.conf.j2 dest=/etc/sysctl.d/60-codeup-server.conf
+  template: src=sysctl.conf.j2 dest=/etc/sysctl.d/60-bebat-ansible.conf
   become: yes
   notify: Restart Procps
