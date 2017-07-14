@@ -5,6 +5,10 @@
   register: apt_key_result
   changed_when: apt_key_result.stdout | int != 0
 
+- name: Install Aptitude
+  apt: pkg=aptitude state=present
+  become: yes
+
 - name: Update APT
   apt: update_cache=yes upgrade=safe cache_valid_time=86400
   become: yes
