@@ -11,9 +11,6 @@
   - name: Restart Redis
     service: name=redis-server state=restarted
     become: true
-  - name: Update Timezone
-    command: dpkg-reconfigure -f noninteractive tzdata
-    become: true
   - name: Turn on Swap
     command: swapon -ae
     become: true

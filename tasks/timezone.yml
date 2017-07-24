@@ -1,8 +1,18 @@
 ---
-- name: Set Timezone
-  lineinfile:
-    line: "{{ timezone }}"
-    dest: /etc/timezone
-    regexp: .+
+- name: Install NTP Daemon
+  apt: pkg=ntp state=present
   become: yes
-  notify: Update Timezone
+
+- name: Remove ntpdate Package
+  apt: pkg=ntpdate state=absent
+  become: yes
+
+- name: Check Current Timezone
+  command: cat /etc/timezone
+  register: current_timezone
+  changed_when: no
+
+- name: Set Timezone
+  command: timedatectl set-timezone {{ timezone }}
+  when: timezone != current_timezone.stdout
+  become: yes

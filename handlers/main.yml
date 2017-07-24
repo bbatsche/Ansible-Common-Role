@@ -3,10 +3,6 @@
   service: name=redis-server state=restarted
   become: yes
 
-- name: Update Timezone
-  command: dpkg-reconfigure -f noninteractive tzdata
-  become: yes
-
 - name: Turn on Swap
   command: swapon -ae
   become: yes
