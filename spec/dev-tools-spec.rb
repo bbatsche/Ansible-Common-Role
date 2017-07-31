@@ -25,7 +25,7 @@ describe command("supervisorctl version") do
   let(:disable_sudo) { false }
 
   it "supervisor is installed" do
-    expect(subject.stdout).to match /^\d+\.\d\.\d+$/
+    expect(subject.stdout).to match /^\d+\.\d+/
   end
   include_examples "no errors"
 end

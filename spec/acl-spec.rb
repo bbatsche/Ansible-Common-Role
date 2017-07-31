@@ -1,4 +1,3 @@
-require "net/ssh"
 require_relative "lib/ansible_helper"
 require_relative "bootstrap"
 
@@ -12,7 +11,7 @@ describe group("web-admin") do
   it { should exist }
 end
 
-describe user(AnsibleHelper.instance.sshOptions) do
+describe user(AnsibleHelper.instance.sshOptions[:user]) do
   it { should belong_to_group "web-admin" }
 end
 

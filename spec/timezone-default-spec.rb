@@ -8,7 +8,6 @@ RSpec.configure do |config|
   end
 end
 
-
 describe "Timezone" do
   include_examples("timezone", "Etc/UTC")
 end

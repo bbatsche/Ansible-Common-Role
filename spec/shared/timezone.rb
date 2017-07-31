@@ -13,12 +13,6 @@ shared_examples "timezone" do |tzName|
       expect(subject.stdout).to match pattern
     end
 
-    it "should have NTP synchronized" do
-      pattern = if os[:release] == "14.04" then /NTP synchronized: yes/ else /Network time on: yes/ end
-
-      expect(subject.stdout).to match /NTP synchronized: yes/
-    end
-
     include_examples "no errors"
   end
 end
