@@ -53,7 +53,7 @@ kernel.pid_max = 65535
 kernel.maps_protect = 1
 
 # Enable ExecShield protection
-kernel.exec-shield = 1
+# kernel.exec-shield = 1 # Ubuntu protects against buffer overflows automatically and doesn't support exec-shield
 kernel.randomize_va_space = 2
 
 # Controls the maximum size of a message, in bytes
