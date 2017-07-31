@@ -10,7 +10,6 @@ else
   set :ssh_options, AnsibleHelper.instance.sshOptions
 end
 
-
 # Disable sudo
 set :disable_sudo, true
 
@@ -18,4 +17,6 @@ set :disable_sudo, true
 # set :env, :LANG => 'C', :LC_MESSAGES => 'C'
 
 # Set PATH
-set :path, '/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:$PATH'
+set :path, "/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:$PATH"
+
+set :shell, "/bin/bash"
