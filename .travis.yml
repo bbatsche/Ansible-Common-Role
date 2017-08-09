@@ -22,11 +22,11 @@ install:
 
   - sudo ansible-galaxy install bbatsche.Base
 
-  - docker run -d ubuntu:trusty sleep infinity
-  - docker run -d ubuntu:xenial sleep infinity
+  - docker run -d --rm --name trusty ubuntu:trusty sleep infinity
+  - docker run -d --rm --name xenial ubuntu:xenial sleep infinity
 
   - echo localhost ansible_connection=local ansible_user=$USER > inventory
-  - echo [docker]
+  - echo [docker] > inventory
   - echo trusty ansible_connection=docker ansible_user=root > inventory
   - echo xenial ansible_connection=docker ansible_user=root > inventory
 
