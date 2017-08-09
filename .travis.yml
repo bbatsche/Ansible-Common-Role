@@ -30,8 +30,8 @@ install:
   - echo trusty ansible_connection=docker ansible_user=root > inventory
   - echo xenial ansible_connection=docker ansible_user=root > inventory
 
-  # - mkdir -p $HOME/.ansible
-  # - sudo chown -R $USER:$USER $HOME/.ansible
+  - mkdir -p $HOME/.ansible
+  - sudo chown -R $USER:$USER $HOME/.ansible
 
   - ansible-playbook -i inventory provision-playbook.yml --skip-tags timezone,sysctl,apt,ruby,node,bash,swap
 before_script:
