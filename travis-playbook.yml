@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: docker
   vars_files:
   - defaults/main.yml
   tasks:

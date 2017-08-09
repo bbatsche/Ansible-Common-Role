@@ -2,6 +2,9 @@
 sudo: required
 dist: trusty
 
+services:
+  - docker
+
 language: generic
 
 env:
@@ -11,40 +14,44 @@ env:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq python-apt python-pycurl
-  - rvm use default
-  - sudo gem install bundler
+  - sudo apt-get install -y -o Dpkg::Options::="--force-confold" docker-engine
+  - docker pull ubuntu:trusty
+  - docker pull ubuntu:xenial
 install:
   - sudo -H pip install ansible==${ANSIBLE_VERSION}.*
 
-  - bundle install
-
   - sudo ansible-galaxy install bbatsche.Base
 
-  - echo localhost ansible_connection=local ansible_ssh_user=$USER > inventory
+  - docker run -d ubuntu:trusty sleep infinity
+  - docker run -d ubuntu:xenial sleep infinity
 
-  - mkdir -p $HOME/.ansible
-  - sudo chown -R $USER:$USER $HOME/.ansible
+  - echo localhost ansible_connection=local ansible_user=$USER > inventory
+  - echo [docker]
+  - echo trusty ansible_connection=docker ansible_user=root > inventory
+  - echo xenial ansible_connection=docker ansible_user=root > inventory
+
+  # - mkdir -p $HOME/.ansible
+  # - sudo chown -R $USER:$USER $HOME/.ansible
 
   - ansible-playbook -i inventory provision-playbook.yml --skip-tags timezone,sysctl,apt,ruby,node,bash,swap
 before_script:
-  - "echo #!/bin/sh >> play.sh"
-  - echo "sudo -E su $USER -c 'ansible-playbook -i inventory travis-playbook.yml'" >> play.sh
-  - chmod +x play.sh
-
-  - "echo #!/bin/sh >> spec.sh"
-  - >
-    echo "sudo -E su -l $USER -c 'rvm use default; cd $TRAVIS_BUILD_DIR && rake spec'" >> spec.sh
-  - chmod +x spec.sh
+  # - "echo #!/bin/sh >> play.sh"
+  # - echo "sudo -E su $USER -c 'ansible-playbook -i inventory travis-playbook.yml'" >> play.sh
+  # - chmod +x play.sh
+  #
+  # - "echo #!/bin/sh >> spec.sh"
+  # - >
+  #   echo "sudo -E su -l $USER -c 'rvm use default; cd $TRAVIS_BUILD_DIR && rake spec'" >> spec.sh
+  # - chmod +x spec.sh
 script:
   # Syntax check
   - ansible-playbook -i inventory travis-playbook.yml --syntax-check
 
   # Play test
-  - travis_wait ./play.sh
+  - ansible-playbook -i inventory travis-playbook.yml
 
   # Idempotence test
-  - ./play.sh > idempotence.out
+  - ansible-playbook -i inventory travis-playbook.yml --syntax-check > idempotence.out
   - >
     grep -q "changed=0.*failed=0" idempotence.out
     && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
