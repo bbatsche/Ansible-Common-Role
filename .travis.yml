@@ -14,7 +14,7 @@ env:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y -o Dpkg::Options::="--force-confold" docker-engine
+  - sudo apt-get install -y -o Dpkg::Options::="--force-confold" docker-ce
   - docker pull ubuntu:trusty
   - docker pull ubuntu:xenial
 install:
