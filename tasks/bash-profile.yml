@@ -20,3 +20,55 @@
     - { alias: ll, command: "ls -lFh" }
     - { alias: la, command: "ls -lFhA" }
     - { alias: l,  command: "ls -CF" }
+
+- name: Expand Bash History
+  lineinfile:
+    dest: ~{{ console_user | default(ansible_ssh_user) }}/.bashrc
+    line: "{{ item.key }}={{ item.value }}"
+    regexp: '^#?\s*{{ item.key }}='
+    state: present
+  with_items:
+    - { key: HISTCONTROL,  value: ignoreboth }
+    - { key: HISTSIZE,     value: 100000 }
+    - { key: HISTFILESIZE, value: 100000 }
+    - { key: HISTIGNORE,   value: "'ls:bg:fg:history'" }
+
+- name: Set Additional Shell Options
+  lineinfile:
+    dest: ~{{ console_user | default(ansible_ssh_user) }}/.bashrc
+    line: "shopt -s {{ item }}"
+    regexp: '^#?\s*shopt -s {{ item }}'
+    state: present
+  with_items:
+    - checkwinsize
+    - globstar
+    - histappend
+    - cmdhist
+
+- name: Enable Vi Editing Mode
+  lineinfile:
+    dest: /etc/inputrc
+    line: "set editing-mode vi"
+    regexp: '^#?\s*set editing-mode'
+    state: present
+  become: yes
+
+- name: Use Arrow Keys to Search History
+  lineinfile:
+    dest: /etc/inputrc
+    line: "{{ item }}"
+    state: present
+  become: yes
+  with_items:
+    - '"\e[B": history-search-forward'
+    - '"\e[A": history-search-backward'
+
+- name: Use Magic Space in Bash
+  blockinfile:
+    dest: /etc/inputrc
+    block: |
+      $if Bash
+      Space: magic-space
+      $endif
+    state: present
+  become: yes

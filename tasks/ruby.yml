@@ -1,10 +1,11 @@
 ---
-- name: Install System Ruby
+- name: Install System Ruby and FFI
   apt: name={{ item }} state=present
   become: yes
   with_items:
     - '{{ "ruby2.0" if ansible_distribution_release == "trusty" else "ruby" }}'
     - '{{ "ruby2.0-dev" if ansible_distribution_release == "trusty" else "ruby-dev" }}'
+    - libffi-dev
 
 - name: Set Gem Documentation Options
   lineinfile:
@@ -13,8 +14,4 @@
     state: present
     line: "gem: {{ '--document rdoc,ri' if env_name == 'dev' else '--no-document' }}"
     regexp: "^gem:"
-  become: yes
-
-- name: Install FFI Development Headers
-  apt: name=libffi-dev state=present
   become: yes
