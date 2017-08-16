@@ -22,8 +22,8 @@ install:
 
   - sudo ansible-galaxy install bbatsche.Base
 
-  - docker run -d --rm --name trusty ubuntu:trusty sleep infinity
-  - docker run -d --rm --name xenial ubuntu:xenial sleep infinity
+  - docker run -d --rm --privileged --name trusty ubuntu:trusty sleep infinity
+  - docker run -d --rm --privileged --name xenial ubuntu:xenial sleep infinity
 
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
@@ -37,7 +37,7 @@ script:
   - ansible-playbook -i travis-inventory.ini travis-playbook.yml
 
   # Idempotence test
-  - ansible-playbook -i travis-inventory.ini travis-playbook.yml --syntax-check > idempotence.out
+  - ansible-playbook -i travis-inventory.ini travis-playbook.yml > idempotence.out
   - >
     grep -q "changed=0.*failed=0" idempotence.out
     && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
