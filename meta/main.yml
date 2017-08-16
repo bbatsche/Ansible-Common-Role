@@ -21,4 +21,5 @@ galaxy_info:
   - sass
   - system
   - web
+  - yarn
 dependencies: []
