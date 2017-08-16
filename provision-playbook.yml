@@ -32,6 +32,9 @@
         validate: /usr/sbin/sshd -t -f %s
       become: yes
       notify: Restart SSH
+      when:
+        - ansible_connection | default('smart') != 'local'
+        - ansible_connection | default('smart') != 'docker'
 
   handlers:
     - name: Restart SSH
