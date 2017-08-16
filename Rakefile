@@ -84,39 +84,7 @@ namespace :init do
     end
   end
 
-  desc "Copy handlers into spec and Travis playbooks"
-  task :handlers do
-    playbooks = Dir.glob "spec/playbooks/*.yml"
-    playbooks << "travis-playbook.yml"
-
-    playbooks.each do |file|
-      dir = File.dirname file
-      book = YAML.load(File.read(file))
-
-      next unless book[0].has_key? "handlers"
-
-      new_includes = []
-      new_handlers = []
-
-      book[0]["handlers"].each do |handler|
-        next unless handler.has_key? "include"
-
-        new_includes << handler
-        handler_path = File.expand_path dir + "/" + handler["include"]
-        handler_content = YAML.load(File.read(handler_path))
-
-        next if handler_content.nil?
-
-        new_handlers += handler_content
-      end
-
-      book[0]["handlers"] = new_includes + new_handlers
-
-      File.write file, book.to_yaml
-    end
-  end
-
-  task :default => [:links, :handlers]
+  task :default => [:links]
 end
 
 task :default => [:"vagrant:up", :"vagrant:provision", :"spec:all", :"vagrant:destroy"]
