@@ -20,8 +20,8 @@ before_install:
 install:
   - sudo -H pip install ansible==${ANSIBLE_VERSION}.*
 
-  - docker run -d --rm --name trusty ubuntu:trusty sleep infinity
-  - docker run -d --rm --name xenial ubuntu:xenial sleep infinity
+  - docker run -d --rm --name --privileged trusty ubuntu:trusty sleep infinity
+  - docker run -d --rm --name --privileged xenial ubuntu:xenial sleep infinity
 
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
