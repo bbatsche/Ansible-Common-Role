@@ -15,6 +15,10 @@
     - gulp
     - grunt-cli
 
+- name: Install APT HTTPS Transport
+  apt: name=apt-transport-https state=present
+  become: yes
+
 - name: Add Yarn APT Key
   apt_key: url=https://dl.yarnpkg.com/debian/pubkey.gpg state=present
   become: yes
