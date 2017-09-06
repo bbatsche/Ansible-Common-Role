@@ -15,34 +15,40 @@ env:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y -o Dpkg::Options::="--force-confold" docker-ce
+
   - docker pull ubuntu:trusty
   - docker pull ubuntu:xenial
+
+  - bundle install
+
 install:
   - sudo -H pip install ansible==${ANSIBLE_VERSION}.*
 
   - sudo ansible-galaxy install bbatsche.Base
 
-  - docker run -d --rm --privileged --name trusty ubuntu:trusty sleep infinity
-  - docker run -d --rm --privileged --name xenial ubuntu:xenial sleep infinity
-
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
 
-  - ansible-playbook -i travis-inventory.ini provision-playbook.yml --skip-tags timezone,sysctl,apt,ruby,node,bash,swap
+  - rake environment:provision
+
 script:
   # Syntax check
-  - ansible-playbook -i travis-inventory.ini travis-playbook.yml --syntax-check
+  - ansible-playbook travis-playbook.yml --syntax-check
 
   # Play test
-  - ansible-playbook -i travis-inventory.ini travis-playbook.yml
+  - rake ansible:playbook[travis-playbook.yml]
 
   # Idempotence test
-  - ansible-playbook -i travis-inventory.ini travis-playbook.yml > idempotence.out
+  - rake ansible:playbook[travis-playbook.yml] > idempotence.out
   - >
     grep -q "changed=0.*failed=0" idempotence.out
     && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
 
   # Serverspec
-  # - travis_wait ./spec.sh
+  - travis_wait rake spec
+
+after_script:
+  - rake environment:destroy
+
 notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/

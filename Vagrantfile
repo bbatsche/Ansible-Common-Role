@@ -2,11 +2,11 @@
 # vi: set ft=ruby :
 
 Vagrant.configure('2') do |config|
-  config.vm.define 'spec-trusty' do |trusty|
+  config.vm.define 'trusty' do |trusty|
     trusty.vm.box = 'ubuntu/trusty64'
   end
 
-  config.vm.define 'spec-xenial' do |xenial|
+  config.vm.define 'xenial' do |xenial|
     xenial.vm.box = 'ubuntu/xenial64'
   end
 

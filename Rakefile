@@ -1,76 +1,119 @@
 require "rake"
-require "yaml"
 require "rspec/core/rake_task"
 require_relative "spec/lib/ansible_helper"
-require_relative "spec/lib/vagrant_helper"
+require_relative "spec/environments"
 
-namespace :vagrant do
-  desc "Boot the test environment (w/o provisioning)"
-  task :up do
-    VagrantHelper.instance.cmd(:up, ["--provider=virtualbox", "--no-color", "--no-provision"])
-  end
+namespace :environment do
+  upTasks        = []
+  downTasks      = []
+  destroyTasks   = []
+  provisionTasks = []
 
-  desc "Provision the test environment"
-  task :provision do
-    VagrantHelper.instance.cmd :provision
-  end
+  AnsibleHelper.each do |vm|
+    namespace vm.name.to_sym do
+      upTasks        << :"#{vm.name}:up"
+      downTasks      << :"#{vm.name}:down"
+      destroyTasks   << :"#{vm.name}:destroy"
+      provisionTasks << :"#{vm.name}:provision"
 
-  desc "Destroy the test environment"
-  task :destroy do
-    VagrantHelper.instance.cmd(:destroy, ["--force"])
-  end
-end
+      desc "Boot #{vm.name} test environment"
+      task :up do
+        puts "Booting #{vm.name} test environment"
 
-task :spec => "spec:all"
+        begin
+          vm.up
+        rescue ExecError => e
+          puts e.message
+          puts e.output.join("\n")
+          exit 1
+        end
+      end
 
-namespace :spec do
-  tasks = []
+      desc "Shut down #{vm.name} test environment"
+      task :down do
+        puts "Shutting down #{vm.name} test environment"
 
-  VagrantHelper::MACHINES.each_key do |vm|
-    vmTasks = []
+        begin
+          vm.down
+        rescue ExecError => e
+          puts e.message
+          puts e.output.join("\n")
+          exit 1
+        end
+      end
 
-    Dir.glob('./spec/*-spec.rb').each do |file|
-      spec = File.basename file
+      desc "Destroy #{vm.name} test environment"
+      task :destroy => :down do
+        puts "Destroying #{vm.name} test environment"
 
-      # Trim off "-spec.rb" and add to list
-      taskName = spec[0..-9]
-      fullName = "#{vm.to_s}:#{taskName}"
-      vmTasks << fullName
+        begin
+          vm.destroy
+        rescue ExecError => e
+          puts e.message
+          puts e.output.join("\n")
+          exit 1
+        end
+      end
 
-      desc "Run serverspec tests for #{taskName} against #{vm.to_s}"
-      RSpec::Core::RakeTask.new(fullName.to_sym => [:init]) do |t|
-        ENV["TARGET_HOST"] = VagrantHelper::MACHINES[vm]
-        t.pattern = "./spec/#{taskName}-spec.rb"
+      desc "Provision #{vm.name} test environment"
+      task :provision => :up do
+        puts "Provisioning #{vm.name} test environment"
+
+        begin
+          vm.provision
+        rescue ExecError => e
+          puts e.message
+          puts e.output.join("\n")
+          exit 1
+        end
       end
     end
-
-    task vm => vmTasks
-    tasks.concat vmTasks
   end
 
-  task :all     => tasks
-  task :default => :all
+  desc "Boot all test environments"
+  task :up => upTasks
+
+  desc "Shut down all test environments"
+  task :down => downTasks
+
+  desc "Destroy all test environments"
+  task :destroy => destroyTasks
+
+  desc "Provision all test environments"
+  task :provision => provisionTasks
 end
 
-VagrantHelper::MACHINES.each do |name, vm|
-  desc "Run an Ansible module in the #{name.to_s} VM"
-  task :"ansible:#{name.to_s}", [:module, :args] do |t, args|
-    args.with_defaults :args => ""
+namespace :spec do
+  specTasks = []
 
-    AnsibleHelper.instance.cmd(args.module, vm, args.args)
-  end
+  AnsibleHelper.each do |vm|
+    namespace vm.name.to_sym do
+      vmTasks = []
+      Dir.glob("./spec/*-spec.rb").each do |file|
+        spec = File.basename file
 
-  namespace :"ansible:#{name.to_s}" do
-    desc "Run an Ansible playbook in the #{name.to_s} VM"
-    task :playbook, [:filename] do |t, args|
-      filename = File.expand_path(args.filename, File.dirname(__FILE__))
+        # Trim off "-spec.rb" and add to list
+        taskName = spec[0..-9]
+        vmTasks << :"#{vm.name}:#{taskName}"
 
-      AnsibleHelper.instance.playbook(filename, vm)
+        desc "Run #{taskName} spec in #{vm.name}"
+        RSpec::Core::RakeTask.new(taskName.to_sym => [:init]) do |task|
+          ENV["TARGET_HOST"] = vm.name
+          task.pattern = file
+        end
+      end
+
+      task :all => vmTasks
+
+      specTasks.concat vmTasks
     end
-  end
-end
 
-task :init => "init:default"
+    desc "Run all specs for #{vm.name}"
+    task vm.name.to_sym => "#{vm.name}:all"
+  end
+
+  task :all => specTasks
+end
 
 namespace :init do
   desc "Symbolic link files and templates into the spec/playbooks directory"
@@ -87,4 +130,37 @@ namespace :init do
   task :default => [:links]
 end
 
-task :default => [:"vagrant:up", :"vagrant:provision", :"spec:all", :"vagrant:destroy"]
+namespace :ansible do
+  playbookTasks = []
+
+  AnsibleHelper.each do |vm|
+    playbookTasks << "playbook:#{vm.name}"
+
+    desc "Run an Ansible module in the #{vm.name} environment"
+    task vm.name.to_sym, [:module, :args] do |t, args|
+      args.with_defaults :args => ""
+
+      AnsibleHelper.cmd(args.module, vm.name, args.args)
+    end
+
+    namespace :playbook do
+      desc "Run an Ansible playbook in the #{vm.name} environment"
+      task vm.name.to_sym, [:filename] do |t, args|
+        filename = File.expand_path(args.filename, File.dirname(__FILE__))
+
+        AnsibleHelper.playbook(filename, vm.name)
+      end
+    end
+  end
+
+  desc "Run an Ansible playbook in all environments"
+  task :playbook, [:filename] => playbookTasks
+end
+
+desc "Run all specs"
+task :spec    => "spec:all"
+
+desc "Initialize test environment files"
+task :init    => "init:default"
+
+task :default => ["environment:up", "environment:provision", "spec:all", "environment:destroy"]

@@ -3,7 +3,7 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/sample-playbook.yml"
+    AnsibleHelper.playbook "playbooks/sample-playbook.yml"
   end
 end
 
@@ -21,6 +21,8 @@ describe command("lsb_release -a") do
   it "is an LTS release" do
     expect(subject.stdout).to match /^Description:\s+.+LTS$/
   end
+
+  include_examples "no errors"
 
   if os[:release] == "14.04"
     it "is Trusty Tahr" do
