@@ -1,6 +1,8 @@
 Role Name
 =========
 
+[![Build Status](https://travis-ci.org/bbatsche/Ansible-Common-Role.svg)](https://travis-ci.org/bbatsche/Ansible-Role-Template)
+
 A brief description of the role goes here.
 
 Requirements
@@ -47,7 +49,7 @@ $ bundle install
 $ rake
 ```
 
-The spec suite will target both Ubuntul Trusty Tahr (14.04) and Xenial Xerus (16.04).
+The spec suite will target both Ubuntu Trusty Tahr (14.04) and Xenial Xerus (16.04).
 
 To see the available rake tasks (and specs):
 
@@ -55,10 +57,4 @@ To see the available rake tasks (and specs):
 $ rake -T
 ```
 
-There are several rake tasks for interacting with the test environment, including:
-
-- `rake vagrant:up` &mdash; Boot the test environment (_**Note:** This will **not** run any provisioning tasks._)
-- `rake vagrant:provision` &mdash; Provision the test environment
-- `rake vagrant:destroy` &mdash; Destroy the test environment
-
-These specs are **not** meant to test for idempotence. They are meant to check that the specified tasks perform their expected steps. Idempotency can be tested independently as a form of integration testing.
+These specs are **not** meant to test for idempotence. They are meant to check that the specified tasks perform their expected steps. Idempotency is tested independently via integration testing.
