@@ -29,7 +29,7 @@ install:
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
 
-  - rake environment:provision
+  - travis_wait rake environment:provision
 
 script:
   # Syntax check
