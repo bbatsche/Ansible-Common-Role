@@ -4,7 +4,7 @@ require_relative "shared/ruby"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/ruby.yml"
+    AnsibleHelper.playbook "playbooks/ruby.yml"
   end
 end
 

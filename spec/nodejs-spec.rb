@@ -4,7 +4,7 @@ require_relative "shared/nodejs"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/nodejs.yml"
+    AnsibleHelper.playbook "playbooks/nodejs.yml"
   end
 end
 

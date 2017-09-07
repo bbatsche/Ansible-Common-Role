@@ -3,7 +3,7 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook("playbooks/sysctl.yml", ENV["TARGET_HOST"], {shmmax_percent: 25, shmall_percent: 25})
+    AnsibleHelper.playbook("playbooks/sysctl.yml", ENV["TARGET_HOST"], {shmmax_percent: 25, shmall_percent: 25})
   end
 end
 

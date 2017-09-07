@@ -4,7 +4,7 @@ require_relative "shared/bash"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/bash-profile-user.yml"
+    AnsibleHelper.playbook "playbooks/bash-profile-user.yml"
   end
 end
 

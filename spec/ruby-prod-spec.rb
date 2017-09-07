@@ -4,7 +4,7 @@ require_relative "shared/ruby"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook("playbooks/ruby.yml", ENV["TARGET_HOST"], { env_name: "production" })
+    AnsibleHelper.playbook("playbooks/ruby.yml", ENV["TARGET_HOST"], { env_name: "production" })
   end
 end
 

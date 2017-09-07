@@ -4,7 +4,7 @@ require_relative "shared/timezone"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook("playbooks/timezone.yml", ENV["TARGET_HOST"], { timezone: "America/Phoenix" })
+    AnsibleHelper.playbook("playbooks/timezone.yml", ENV["TARGET_HOST"], { timezone: "America/Phoenix" })
   end
 end
 

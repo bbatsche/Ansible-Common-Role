@@ -3,7 +3,7 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook("playbooks/swap.yml", ENV["TARGET_HOST"], { swap_mb: 1024, swap_path: "/swap" })
+    AnsibleHelper.playbook("playbooks/swap.yml", ENV["TARGET_HOST"], { swap_mb: 1024, swap_path: "/swap" })
   end
 end
 

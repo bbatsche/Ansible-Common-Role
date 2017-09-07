@@ -4,7 +4,7 @@ require_relative "shared/timezone"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/timezone.yml"
+    AnsibleHelper.playbook "playbooks/timezone.yml"
   end
 end
 

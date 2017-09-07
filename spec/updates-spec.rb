@@ -3,7 +3,7 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/updates.yml"
+    AnsibleHelper.playbook "playbooks/updates.yml"
   end
 end
 

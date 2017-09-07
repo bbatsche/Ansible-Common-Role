@@ -3,7 +3,7 @@ require_relative "bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
-    AnsibleHelper.instance.playbook "playbooks/acl.yml"
+    AnsibleHelper.playbook "playbooks/acl.yml"
   end
 end
 
@@ -11,7 +11,7 @@ describe group("web-admin") do
   it { should exist }
 end
 
-describe user(AnsibleHelper.instance.sshOptions[:user]) do
+describe user(AnsibleHelper[ENV["TARGET_HOST"]].sshConfig[:user]) do
   it { should belong_to_group "web-admin" }
 end
 
