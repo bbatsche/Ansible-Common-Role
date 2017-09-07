@@ -33,6 +33,13 @@
         - ansible_connection | default('smart') != 'local'
         - ansible_connection | default('smart') != 'docker'
 
+    - name: Install LSB
+      apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
+      become: yes
+      with_items:
+        - lsb-release
+        - lsb-core
+
   handlers:
     - name: Restart SSH
       service: name=ssh state=restarted
