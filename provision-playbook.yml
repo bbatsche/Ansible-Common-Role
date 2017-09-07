@@ -36,12 +36,13 @@
         - ansible_connection | default('smart') != 'local'
         - ansible_connection | default('smart') != 'docker'
 
-    - name: Install LSB
+    - name: Install Spec Dependencies
       apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
       become: yes
       with_items:
         - lsb-release
         - lsb-core
+        - netcat
 
   handlers:
     - name: Restart SSH
