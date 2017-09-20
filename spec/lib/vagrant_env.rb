@@ -30,7 +30,7 @@ class VagrantEnv
     config  = sshConfig
     keyPath = Shellwords.escape config[:keys].first
 
-    "#{@name} ansible_ssh_host=#{config[:host_name]} ansible_ssh_user=#{config[:user]} ansible_ssh_port=#{config[:port]} ansible_ssh_private_key_file=#{keyPath}"
+    "#{@name} ansible_host=#{config[:host_name]} ansible_user=#{config[:user]} ansible_port=#{config[:port]} ansible_ssh_private_key_file=#{keyPath}"
   end
 
   def sshConfig
