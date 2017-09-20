@@ -22,8 +22,16 @@ class AnsibleHelper
     def inventory
       file = Tempfile.new("inventory")
 
+      file << "[vagrant]\n"
+
       machines.each_value do |vm|
-        file << vm.inventory_line << "\n"
+        file << vm.inventory_line << "\n" if vm.is_a? VagrantEnv
+      end
+
+      file << "\n[docker]\n"
+
+      machines.each_value do |vm|
+        file << vm.inventory_line << "\n" if vm.is_a? DockerEnv
       end
 
       file.close
