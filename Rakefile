@@ -140,7 +140,7 @@ namespace :ansible do
     task vm.name.to_sym, [:module, :args] do |t, args|
       args.with_defaults :args => ""
 
-      AnsibleHelper.cmd(args.module, vm.name, args.args)
+      AnsibleHelper.module(args.module, vm.name, args.args)
     end
 
     namespace :playbook do
