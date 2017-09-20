@@ -1,7 +1,9 @@
 ---
 - hosts: all
+
   vars_files:
     - ../../defaults/main.yml
+
   tasks:
     # Include task to update APT cache before doing other installs
     - include: ../../tasks/updates.yml
@@ -11,3 +13,6 @@
     - include: ../../tasks/ruby.yml
 
     - include: ../../tasks/dev-tools.yml
+
+  handlers:
+    - include: ../../handlers/main.yml

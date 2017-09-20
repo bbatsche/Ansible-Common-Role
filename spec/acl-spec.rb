@@ -11,7 +11,7 @@ describe group("web-admin") do
   it { should exist }
 end
 
-describe user(AnsibleHelper[ENV["TARGET_HOST"]].sshConfig[:user]) do
+describe user(command("whoami").stdout.strip) do
   it { should belong_to_group "web-admin" }
 end
 

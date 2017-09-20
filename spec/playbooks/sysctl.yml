@@ -1,20 +1,11 @@
 ---
 - hosts: all
+
   vars_files:
-  - "../../defaults/main.yml"
+    - ../../defaults/main.yml
+
   tasks:
-  - include: "../../tasks/sysctl.yml"
+    - include: ../../tasks/sysctl.yml
+
   handlers:
-  - include: "../../handlers/main.yml"
-  - name: Restart Redis
-    service: name=redis-server state=restarted
-    become: true
-  - name: Turn on Swap
-    command: swapon -ae
-    become: true
-  - name: Restart Procps
-    service: name=procps state=restarted
-    become: true
-  - name: Remount Root
-    command: mount -o remount / warn=no
-    become: true
+    - include: ../../handlers/main.yml

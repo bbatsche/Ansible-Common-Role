@@ -8,6 +8,9 @@
     - beanstalkd
     - supervisor
     - sed
+  notify:
+    - Restart Beanstalk
+    - Restart Supervisor
 
 - name: Install Bower, Gulp, & Grunt
   npm: name={{ item }} global=yes state=present

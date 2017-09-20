@@ -14,7 +14,7 @@ describe command("git --version") do
   include_examples "no errors"
 end
 
-describe command('echo -e "stats\\r" | nc localhost 11300') do
+describe command('echo -e "stats\\r" | nc localhost 11300 -q 2') do
   it "beanstalkd is running" do
     expect(subject.stdout).to match /^OK \d+/
   end

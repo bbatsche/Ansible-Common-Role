@@ -5,6 +5,10 @@ RSpec.configure do |config|
   config.before :suite do
     AnsibleHelper.playbook("playbooks/swap.yml", ENV["TARGET_HOST"], { swap_mb: 1024, swap_path: "/swap" })
   end
+
+  config.before :all do
+    skip "Cannot reliably manage swap memory in Docker" if AnsibleHelper[ENV["TARGET_HOST"]].is_a? DockerEnv
+  end
 end
 
 describe command("swapon -s") do

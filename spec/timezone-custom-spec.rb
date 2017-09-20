@@ -6,6 +6,10 @@ RSpec.configure do |config|
   config.before :suite do
     AnsibleHelper.playbook("playbooks/timezone.yml", ENV["TARGET_HOST"], { timezone: "America/Phoenix" })
   end
+
+  config.before :all do
+    skip "Cannot get a working dbus connection in Docker" if AnsibleHelper[ENV["TARGET_HOST"]].is_a? DockerEnv
+  end
 end
 
 describe "Timezone" do

@@ -18,7 +18,7 @@ describe linux_kernel_parameter("fs.file-max") do
   totalMem = host_inventory["memory"]["total"].to_i / 1024
 
   it "should be 256 for every 4MB of RAM" do
-    expect(subject.value).to be_within(100).of((totalMem / 4) * 256)
+    expect(subject.value).to be_within(200).of((totalMem / 4) * 256)
   end
 end
 

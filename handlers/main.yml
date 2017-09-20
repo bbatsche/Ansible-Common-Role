@@ -14,3 +14,11 @@
 - name: Remount Root
   command: mount -o remount / warn=no
   become: yes
+
+- name: Restart Beanstalk
+  service: name=beanstalkd state=restarted
+  become: yes
+
+- name: Restart Supervisor
+  service: name=supervisor state=restarted
+  become: yes
