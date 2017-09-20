@@ -33,6 +33,7 @@ The role is designed to create a basic development environment out of the box, h
 - `swap_path`&mdash; Location to store the swap file. Default is "/swap".
 - `shmmax_percent` &mdash; Percentage of available memory to use for `kernel.shmmax`. Default is "50".
 - `shmall_percent` &mdash; Percentage of available memory to use for `kernel.shmall`. Default is "50".
+- `default_groups` &mdash; Groups to add the Ansible user or `console_user` to. Values are "web-admin" and "www-data".
 
 Example Playbook
 ----------------

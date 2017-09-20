@@ -5,21 +5,23 @@
   notify: Remount Root
 
 - name: Create Web Admin Group
-  group: name=web-admin
+  group: name={{ item }}
+  with_items: "{{ default_groups }}"
   become: yes
 
 - name: Add Console User to Web Admin Group
   user:
-    name: "{{ console_user | default(ansible_ssh_user) }}"
-    groups: web-admin
+    name:   "{{ console_user | default(ansible_user) }}"
+    groups: "{{ item }}"
     append: yes
+  with_items: "{{ default_groups }}"
   become: yes
   register: group_added
 
 # Woo! Kinda sorta super kludgy solution to refreshing SSH connection, but like holy crap it actually works!
 # http://stackoverflow.com/questions/26677064/create-and-use-group-without-restart/37337848#37337848
 - name: Restart SSH
-  shell: sleep 1; pkill -u {{ ansible_ssh_user }} sshd
+  shell: sleep 1; pkill -u {{ ansible_user }} sshd
   async: 3
   poll: 2
   when:

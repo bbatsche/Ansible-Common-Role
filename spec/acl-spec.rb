@@ -11,8 +11,13 @@ describe group("web-admin") do
   it { should exist }
 end
 
+describe group("www-data") do
+  it { should exist }
+end
+
 describe user(command("whoami").stdout.strip) do
   it { should belong_to_group "web-admin" }
+  it { should belong_to_group "www-data" }
 end
 
 describe command("setfacl -m g:web-admin:rwx,d:g:web-admin:rwx $HOME/acl_test") do

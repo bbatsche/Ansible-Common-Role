@@ -1,0 +1,4 @@
+---
+default_groups:
+  - web-admin
+  - www-data
