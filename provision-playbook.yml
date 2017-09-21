@@ -2,6 +2,9 @@
 - hosts: all
   gather_facts: false
 
+  vars:
+    swap_mb: 512
+
   roles:
     - bbatsche.Base
 
