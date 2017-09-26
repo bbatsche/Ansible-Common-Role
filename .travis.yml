@@ -6,6 +6,10 @@ services:
   - docker
 
 language: generic
+cache:
+  directories:
+    - vendor/bundle
+    - $HOME/.cache/pip
 
 env:
   - ANSIBLE_VERSION="2.1"
