@@ -48,10 +48,6 @@ kernel.core_uses_pid = 1
 # Allow for more PIDs
 kernel.pid_max = 65535
 
-# The contents of /proc/<pid>/maps and smaps files are only visible to
-# readers that are allowed to ptrace() the process
-kernel.maps_protect = 1
-
 # Enable ExecShield protection
 # kernel.exec-shield = 1 # Ubuntu protects against buffer overflows automatically and doesn't support exec-shield
 kernel.randomize_va_space = 2
@@ -223,7 +219,7 @@ net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_max_orphans = 16384
 net.ipv4.tcp_orphan_retries = 0
 
-{%- if ansible_connection != "docker" %}
+{% if ansible_connection != "docker" -%}
 # Increase the maximum memory used to reassemble IP fragments
 net.ipv4.ipfrag_high_thresh = 512000
 net.ipv4.ipfrag_low_thresh = 446464
