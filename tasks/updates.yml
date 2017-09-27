@@ -15,16 +15,14 @@
   apt: update_cache=yes upgrade=safe cache_valid_time=86400
   become: yes
 
-- name: Install Unattended Upgrades
+- name: Install APT & Ubuntu Utils
   apt: pkg={{ item }} state=present
   become: yes
   with_items:
     - unattended-upgrades
     - update-notifier-common
-
-- name: Install Landscape Client
-  apt: pkg=landscape-client state=present
-  become: yes
+    - apt-transport-https
+    - landscape-client
 
 - name: Configure Landscape Sysinfo
   copy:

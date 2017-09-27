@@ -12,10 +12,6 @@
     - ndg-httpsclient
     - pyasn1
 
-- name: Install APT HTTPS Transport
-  apt: name=apt-transport-https state=present
-  become: yes
-
 - name: Add Node APT Key
   apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key state=present
   become: yes

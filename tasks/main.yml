@@ -1,12 +1,12 @@
 ---
-- include: timezone.yml
-  tags: [timezone]
-
 - include: sysctl.yml
   tags: [sysctl]
 
 - include: updates.yml
   tags: [apt]
+
+- include: timezone.yml
+  tags: [timezone]
 
 - include: swap.yml
   tags: [swap]
