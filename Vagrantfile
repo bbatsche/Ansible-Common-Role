@@ -13,7 +13,7 @@ Vagrant.configure('2') do |config|
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "provision-playbook.yml"
 
-    ansible.skip_tags = ["timezone", "sysctl", "apt", "ruby", "node"]
+    ansible.skip_tags = ["timezone", "sysctl", "ruby", "node"]
   end
 
   if Vagrant.has_plugin? 'vagrant-cachier'

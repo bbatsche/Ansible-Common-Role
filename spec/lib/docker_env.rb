@@ -21,7 +21,7 @@ class DockerEnv
 
     inventory.close
 
-    `ansible-playbook -i #{inventory.path} -l #{@name} provision-playbook.yml --skip-tags="timezone,sysctl,apt,ruby,node"`
+    `ansible-playbook -i #{inventory.path} -l #{@name} provision-playbook.yml --skip-tags="timezone,sysctl,ruby,node"`
   ensure
     inventory.unlink unless inventory.nil?
   end
