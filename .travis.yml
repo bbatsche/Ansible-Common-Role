@@ -24,12 +24,12 @@ before_install:
   - docker pull ubuntu:trusty
   - docker pull ubuntu:xenial
 
-  - bundle install
+  - travis_rety bundle install
 
 install:
-  - sudo -H pip install ansible==${ANSIBLE_VERSION}.*
+  - travis_retry sudo -H pip install ansible==${ANSIBLE_VERSION}.*
 
-  - sudo ansible-galaxy install bbatsche.Base
+  - travis_retry sudo ansible-galaxy install bbatsche.Base
 
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
@@ -50,7 +50,7 @@ script:
     && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
 
   # Serverspec
-  - travis_wait rake spec
+  - rake spec
 
 after_script:
   - rake environment:destroy
