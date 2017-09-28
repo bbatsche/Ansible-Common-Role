@@ -24,7 +24,7 @@ before_install:
   - docker pull ubuntu:trusty
   - docker pull ubuntu:xenial
 
-  - travis_rety bundle install
+  - travis_retry bundle install
 
 install:
   - travis_retry sudo -H pip install ansible==${ANSIBLE_VERSION}.*
