@@ -48,7 +48,7 @@ class AnsibleHelper
       cmd = "ansible-playbook -i #{inventory.path} -l #{host} #{playbookFile}"
 
       extraVars.each do |key, value|
-        cmd << " -e \"#{key.to_s}=#{value}\""
+        cmd << %Q( -e '"#{key.to_s}"="#{value}"')
       end
 
       system cmd
