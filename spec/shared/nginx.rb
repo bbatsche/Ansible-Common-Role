@@ -45,7 +45,7 @@ end
 
 shared_examples "curl request" do |code|
   it "responds with status #{code}" do
-    expect(subject.stdout).to match /^HTTP\/1\.1 #{Regexp.quote(code)}/
+    expect(subject.stdout).to match %r{^HTTP/1\.1 #{Regexp.quote(code)}}
   end
 end
 
@@ -82,26 +82,5 @@ shared_examples "access logs" do |opts|
     it "logged the previous request" do
       expect(subject.stdout).to match /^127\.0\.0\.1 - - \[[0-9T:+-]+\] "GET #{Regexp.quote(url)} HTTP\/1\.1" #{Regexp.quote(code)} \d+ "-" "curl\/[0-9.]+" "-"$/
     end
-  end
-end
-
-shared_examples "curl request cache" do |expires|
-  it "has an ETag" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^ETag: "[[:xdigit:]-]+"$/
-  end
-
-  # If expires isn't a number of days, assume we used "epoch" and there's no max-age to check
-  if expires.is_a? Integer
-    it "includes cache control max age" do
-      expect(subject.stdout.gsub(/\r/, '')).to match /^Cache-Control: max-age=#{Regexp.quote((expires * 24 * 3600).to_s)}/
-    end
-  end
-
-  it "includes expires date" do
-    if expires.is_a? Integer
-      expires = DateTime.httpdate(subject.stdout.gsub(/\r/, '').match(/^Date: (.+)$/)[1]) + expires
-    end
-
-    expect(subject.stdout.gsub(/\r/, '')).to match /^Expires: #{Regexp.quote(expires.httpdate)}$/
   end
 end

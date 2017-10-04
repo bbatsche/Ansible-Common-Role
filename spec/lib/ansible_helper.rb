@@ -50,8 +50,6 @@ class AnsibleHelper
 
       cmd << " -e #{extraVars.to_json.shellescape}" unless extraVars.empty?
 
-      puts cmd
-
       system cmd
     end
 
