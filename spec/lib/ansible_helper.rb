@@ -1,5 +1,6 @@
 require 'tempfile'
 require 'shellwords'
+require 'json'
 
 class AnsibleHelper
   class << self
@@ -47,9 +48,7 @@ class AnsibleHelper
 
       cmd = "ansible-playbook -i #{inventory.path} -l #{host} #{playbookFile}"
 
-      extraVars.each do |key, value|
-        cmd << " -e \"#{key.to_s}=#{value}\""
-      end
+      cmd << " -e #{extraVars.to_json.shellescape}" unless extraVars.empty?
 
       system cmd
     end
@@ -61,11 +60,7 @@ class AnsibleHelper
 
       cmd = "ansible #{host} -i #{invFile.path} -m #{moduleName} --become"
 
-      if moduleArgs != ""
-        moduleArgs = Shellwords.escape moduleArgs
-
-        cmd << " -a #{moduleArgs}"
-      end
+      cmd << " -a #{moduleArgs.shellescape}" unless moduleArgs.strip.empty?
 
       system cmd
     end
