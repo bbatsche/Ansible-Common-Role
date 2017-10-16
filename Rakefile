@@ -1,6 +1,5 @@
 require "rake"
 require "rspec/core/rake_task"
-require_relative "spec/lib/ansible_helper"
 require_relative "spec/environments"
 
 namespace :environment do

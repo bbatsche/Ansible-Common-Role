@@ -1,4 +1,3 @@
-require_relative "lib/ansible_helper"
 require_relative "bootstrap"
 
 RSpec.configure do |config|

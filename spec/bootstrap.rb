@@ -1,7 +1,7 @@
 require "serverspec"
-require_relative "lib/ansible_helper"
 require_relative "environments"
-require_relative "shared/no_errors"
+
+Dir[File.join(File.dirname(__FILE__), "shared", "*.rb")].each { |file| require_relative file }
 
 if ENV["CONTINUOUS_INTEGRATION"] == "true"
   set :backend, :docker

@@ -1,6 +1,5 @@
 require "docker"
 require "tempfile"
-require_relative "ansible_helper"
 
 class DockerEnv
   attr_reader :name, :image
