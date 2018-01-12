@@ -69,17 +69,22 @@ namespace :environment do
     end
   end
 
+  multitask :"up:all"        => upTasks
+  multitask :"down:all"      => downTasks
+  multitask :"destroy:all"   => destroyTasks
+  multitask :"provision:all" => provisionTasks
+  
   desc "Boot all test environments"
-  task :up => upTasks
+  task :up => :"up:all"
 
   desc "Shut down all test environments"
-  task :down => downTasks
+  task :down => :"down:all"
 
   desc "Destroy all test environments"
-  task :destroy => destroyTasks
+  task :destroy => :"destroy:all"
 
   desc "Provision all test environments"
-  task :provision => provisionTasks
+  task :provision => :"provision:all"
 end
 
 namespace :spec do
@@ -104,14 +109,14 @@ namespace :spec do
 
       task :all => vmTasks
 
-      specTasks.concat vmTasks
+      specTasks << :"#{vm.name}:all"
     end
 
     desc "Run all specs for #{vm.name}"
     task vm.name.to_sym => "#{vm.name}:all"
   end
 
-  task :all => specTasks
+  multitask :all => specTasks
 end
 
 namespace :init do
