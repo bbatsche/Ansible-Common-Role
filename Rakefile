@@ -158,7 +158,11 @@ namespace :ansible do
   end
 
   desc "Run an Ansible playbook in all environments"
-  task :playbook, [:filename] => playbookTasks
+  task :playbook, [:filename] do |t, args|
+    filename = File.expand_path(args.filename, File.dirname(__FILE__))
+
+    AnsibleHelper.playbook filename
+  end
 end
 
 desc "Run all specs"
