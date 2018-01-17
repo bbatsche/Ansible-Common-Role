@@ -221,8 +221,8 @@ net.ipv4.tcp_orphan_retries = 0
 
 {% if ansible_connection != "docker" -%}
 # Increase the maximum memory used to reassemble IP fragments
-net.ipv4.ipfrag_high_thresh = 512000
-net.ipv4.ipfrag_low_thresh = 446464
+net.ipv4.ipfrag_high_thresh = 4194304
+net.ipv4.ipfrag_low_thresh = 3145728
 {%- endif %}
 
 # don't cache ssthresh from previous connection
