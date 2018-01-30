@@ -13,6 +13,8 @@ Vagrant.configure('2') do |config|
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "provision-playbook.yml"
 
+    ansible.compatibility_mode = "2.0"
+
     ansible.skip_tags = ["timezone", "sysctl", "ruby", "node"]
   end
 
