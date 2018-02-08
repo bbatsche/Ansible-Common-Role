@@ -7,9 +7,11 @@ services:
 
 language: generic
 cache:
+  bundler: true
+  pip: true
+  apt: true
   directories:
-    - vendor/bundle
-    - $HOME/.cache/pip
+    - $HOME/.ansible/roles
 
 env:
   - ANSIBLE_VERSION="2.1"
