@@ -22,7 +22,7 @@ end
 shared_examples "ruby::gem" do |cmd|
   describe command("#{cmd} --version") do
     it "should be a correct version" do
-      expect(subject.stdout).to match /^2\.\d+\.\d+$/
+      expect(subject.stdout).to match /^2\.\d+\.\d+/
     end
 
     include_examples "no errors"
