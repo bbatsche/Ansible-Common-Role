@@ -25,7 +25,7 @@
   async: 3
   poll: 2
   when:
-    - group_added | changed
+    - group_added is changed
     - ansible_connection | default('smart') != 'local'
     - ansible_connection | default('smart') != 'docker'
 # meta: reset_connection when support for 2.1 and 2.2 is dropped

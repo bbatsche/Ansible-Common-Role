@@ -5,22 +5,19 @@
   when: ansible_swaptotal_mb + 1 < swap_mb | int
   register: create_swap
 
-- name: Secure Swap File
-  file: name={{ swap_path }} owner=root group=root mode=0600
-  become: yes
-  when: create_swap|changed
+- block:
+  - name: Secure Swap File
+    file: name={{ swap_path }} owner=root group=root mode=0600
 
-- name: Make Swap
-  command: mkswap {{ swap_path }}
-  become: yes
-  when: create_swap|changed
-  notify: Turn on Swap
+  - name: Make Swap
+    command: mkswap {{ swap_path }}
+    notify: Turn on Swap
 
-- name: Add Swap to Fstab
-  lineinfile:
-    dest:   /etc/fstab
-    regexp: "swap"
-    line:   "{{ swap_path }} none swap sw 0 0"
-    state:  present
+  - name: Add Swap to Fstab
+    lineinfile:
+      dest:   /etc/fstab
+      regexp: "swap"
+      line:   "{{ swap_path }} none swap sw 0 0"
+      state:  present
   become: yes
-  when: create_swap|changed
+  when: create_swap is changed
