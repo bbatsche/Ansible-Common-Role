@@ -45,6 +45,13 @@
     - histappend
     - cmdhist
 
+- name: Enable Direnv
+  lineinfile:
+    dest: ~{{ console_user | default(ansible_user) }}/.bashrc
+    line: 'eval "$(direnv hook bash)"'
+    state: present
+  when: ansible_distribution_release != 'trusty'
+
 - name: Enable Vi Editing Mode
   lineinfile:
     dest: /etc/inputrc
