@@ -51,3 +51,8 @@
     group: root
     mode: 0644
   become: yes
+
+- name: Install Direnv
+  apt: name=direnv state=present
+  when: ansible_distribution_release != 'trusty'
+  become: yes
