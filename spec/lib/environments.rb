@@ -1,4 +1,6 @@
-Dir[File.join(File.dirname(__FILE__), "*.rb")].each { |file| require_relative file }
+require_relative "ansible_helper"
+require_relative "docker_env"
+require_relative "vagrant_env"
 
 if ENV["CONTINUOUS_INTEGRATION"] == "true"
   # CI server will use docker for environments
