@@ -49,7 +49,7 @@ $ bundle install
 $ rake
 ```
 
-The spec suite will target both Ubuntu Trusty Tahr (14.04) and Xenial Xerus (16.04).
+The spec suite will target Ubuntu Trusty Tahr (14.04), Xenial Xerus (16.04), and Bionic Bever (18.04).
 
 To see the available rake tasks (and specs):
 

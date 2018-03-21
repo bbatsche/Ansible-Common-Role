@@ -20,6 +20,8 @@ env:
   - ANSIBLE_VERSION="2.5" TEST_SUITE=trusty
   - ANSIBLE_VERSION="2.4" TEST_SUITE=xenial
   - ANSIBLE_VERSION="2.5" TEST_SUITE=xenial
+  - ANSIBLE_VERSION="2.4" TEST_SUITE=bionic
+  - ANSIBLE_VERSION="2.5" TEST_SUITE=bionic
 
 before_install:
   - sudo apt-get update -qq
@@ -27,6 +29,7 @@ before_install:
 
   - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "trusty" ]; then docker pull ubuntu:trusty; fi
   - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "xenial" ]; then docker pull ubuntu:xenial; fi
+  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "bionic" ]; then docker pull ubuntu:bionic; fi
 
   - travis_retry bundle install
 

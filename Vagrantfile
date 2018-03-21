@@ -10,6 +10,10 @@ Vagrant.configure('2') do |config|
     xenial.vm.box = 'ubuntu/xenial64'
   end
 
+  config.vm.define 'bionic' do |xenial|
+    xenial.vm.box = 'ubuntu/bionic64'
+  end
+
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "provision-playbook.yml"
 

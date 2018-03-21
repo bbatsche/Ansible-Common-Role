@@ -36,4 +36,11 @@ describe command("lsb_release -a") do
       expect(subject.stdout).to match /^Codename:\s+xenial$/
     end
   end
+
+  if os[:release] == "18.04"
+    it "is Bionic Bever" do
+      expect(subject.stdout).to match /^Release:\s+18.04$/
+      expect(subject.stdout).to match /^Codename:\s+bionic$/
+    end
+  end
 end

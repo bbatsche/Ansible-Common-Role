@@ -7,11 +7,12 @@ if ENV["CONTINUOUS_INTEGRATION"] == "true"
   [
     {:name => "trusty", :image => "ubuntu:trusty"},
     {:name => "xenial", :image => "ubuntu:xenial"}
+    {:name => "bionic", :image => "ubuntu:bionic"}
   ].each do |vm|
     AnsibleHelper << DockerEnv.new(vm[:name], vm[:image])
   end
 else
-  ["trusty", "xenial"].each do |vm|
+  ["trusty", "xenial", "bionic"].each do |vm|
     AnsibleHelper << VagrantEnv.new(vm)
   end
 end
