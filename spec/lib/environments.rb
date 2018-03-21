@@ -6,7 +6,7 @@ if ENV["CONTINUOUS_INTEGRATION"] == "true"
   # CI server will use docker for environments
   [
     {:name => "trusty", :image => "ubuntu:trusty"},
-    {:name => "xenial", :image => "ubuntu:xenial"}
+    {:name => "xenial", :image => "ubuntu:xenial"},
     {:name => "bionic", :image => "ubuntu:bionic"}
   ].each do |vm|
     AnsibleHelper << DockerEnv.new(vm[:name], vm[:image])
