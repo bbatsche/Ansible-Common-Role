@@ -11,7 +11,7 @@ cache:
   directories:
     - vendor/bundle
     - $HOME/.cache/pip
-    - /etc/ansible/roles
+    - roles
 
 env:
   - ANSIBLE_VERSION="2.4" TEST_SUITE=idempotence
