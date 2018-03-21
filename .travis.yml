@@ -1,13 +1,11 @@
 ---
 sudo: required
-dist: trusty
 
 services:
   - docker
 
 language: generic
 cache:
-  apt: true
   directories:
     - vendor/bundle
     - $HOME/.cache/pip
@@ -25,9 +23,6 @@ env:
   - ANSIBLE_VERSION="2.5" TEST_SUITE=bionic
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y -o Dpkg::Options::="--force-confold" docker-ce
-
   - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "trusty" ]; then docker pull ubuntu:trusty; fi
   - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "xenial" ]; then docker pull ubuntu:xenial; fi
   - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "bionic" ]; then docker pull ubuntu:bionic; fi
@@ -64,7 +59,7 @@ script:
   - if [ $TEST_SUITE != "idempotence" ]; then bundle exec rake spec:$TEST_SUITE; fi
 
 after_script:
-  - rake environment:destroy
+  - bundle exec rake environment:destroy
 
 notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/
