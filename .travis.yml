@@ -11,6 +11,7 @@ cache:
   directories:
     - vendor/bundle
     - $HOME/.cache/pip
+    - $HOME/.local
     - roles
 
 env:
@@ -34,8 +35,7 @@ before_install:
   - travis_retry bundle install --deployment
 
 install:
-  - travis_retry sudo -H pip install -U pip wheel
-  - travis_retry sudo -H pip install -U ansible==${ANSIBLE_VERSION}.*
+  - travis_retry pip install --user -U ansible==${ANSIBLE_VERSION}.*
 
   - travis_retry sudo ansible-galaxy install bbatsche.Base
 
