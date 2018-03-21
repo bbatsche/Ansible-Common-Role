@@ -25,8 +25,8 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y -o Dpkg::Options::="--force-confold" docker-ce
 
-  - docker pull ubuntu:trusty
-  - docker pull ubuntu:xenial
+  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "trusty" ]; then docker pull ubuntu:trusty; fi
+  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "xenial" ]; then docker pull ubuntu:xenial; fi
 
   - travis_retry bundle install
 
@@ -38,7 +38,8 @@ install:
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
 
-  - travis_wait rake environment:provision
+  - if [ $TEST_SUITE = "idempotence" ]; then travis_wait rake environment:provision; fi
+  - if [ $TEST_SUITE != "idempotence" ]; then travis_wait rake environment:${TEST_SUITE}:provision; fi
 
 script:
   # Syntax check
