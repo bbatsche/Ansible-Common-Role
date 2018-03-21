@@ -1,7 +1,7 @@
 Role Name
 =========
 
-[![Build Status](https://travis-ci.org/bbatsche/Ansible-Common-Role.svg)](https://travis-ci.org/bbatsche/Ansible-Role-Template)
+[![Build Status](https://travis-ci.org/bbatsche/Ansible-Role-Template.svg)](https://travis-ci.org/bbatsche/Ansible-Role-Template)
 
 A brief description of the role goes here.
 
