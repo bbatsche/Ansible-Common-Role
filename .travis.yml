@@ -7,11 +7,10 @@ services:
 
 language: generic
 cache:
-  bundler: true
-  pip: true
   apt: true
   directories:
-    - /root/.cache/pip
+    - vendor/bundle
+    - $HOME/.cache/pip
     - /etc/ansible/roles
 
 env:
@@ -35,7 +34,8 @@ before_install:
   - travis_retry bundle install
 
 install:
-  - travis_retry sudo -H pip install ansible==${ANSIBLE_VERSION}.*
+  - travis_retry sudo -H pip install -U pip wheel
+  - travis_retry sudo -H pip install -U ansible==${ANSIBLE_VERSION}.*
 
   - travis_retry sudo ansible-galaxy install bbatsche.Base
 
