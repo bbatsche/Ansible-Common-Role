@@ -1,6 +1,6 @@
 require "rake"
 require "rspec/core/rake_task"
-require_relative "spec/environments"
+require_relative "spec/lib/environments"
 
 namespace :environment do
   upTasks        = []
@@ -73,7 +73,7 @@ namespace :environment do
   multitask :"down:all"      => downTasks
   multitask :"destroy:all"   => destroyTasks
   multitask :"provision:all" => provisionTasks
-  
+
   desc "Boot all test environments"
   task :up => :"up:all"
 

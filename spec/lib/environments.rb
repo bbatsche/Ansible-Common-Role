@@ -1,4 +1,4 @@
-Dir[File.join(File.dirname(__FILE__), "lib", "*.rb")].each { |file| require_relative file }
+Dir[File.join(File.dirname(__FILE__), "*.rb")].each { |file| require_relative file }
 
 if ENV["CONTINUOUS_INTEGRATION"] == "true"
   # CI server will use docker for environments
