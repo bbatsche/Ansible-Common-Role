@@ -31,7 +31,7 @@ before_install:
   - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "xenial" ]; then docker pull ubuntu:xenial; fi
   - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "bionic" ]; then docker pull ubuntu:bionic; fi
 
-  - travis_retry bundle install
+  - travis_retry bundle install --deployment
 
 install:
   - travis_retry sudo -H pip install -U pip wheel
@@ -42,18 +42,18 @@ install:
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
 
-  - if [ $TEST_SUITE = "idempotence" ]; then travis_wait rake environment:provision; fi
-  - if [ $TEST_SUITE != "idempotence" ]; then travis_wait rake environment:${TEST_SUITE}:provision; fi
+  - if [ $TEST_SUITE = "idempotence" ]; then travis_wait bundle exec rake environment:provision; fi
+  - if [ $TEST_SUITE != "idempotence" ]; then travis_wait bundle exec rake environment:${TEST_SUITE}:provision; fi
 
 script:
   # Syntax check
   - if [ $TEST_SUITE = "idempotence" ]; then ansible-playbook travis-playbook.yml --syntax-check; fi
 
   # Play test
-  - if [ $TEST_SUITE = "idempotence" ]; then rake ansible:playbook[travis-playbook.yml]; fi
+  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook[travis-playbook.yml]; fi
 
   # Idempotence test
-  - if [ $TEST_SUITE = "idempotence" ]; then rake ansible:playbook[travis-playbook.yml] > idempotence.out; fi
+  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook[travis-playbook.yml] > idempotence.out; fi
   - >
     if [ $TEST_SUITE = "idempotence" ]; then
     grep -q "changed=0.*failed=0" idempotence.out
@@ -61,7 +61,7 @@ script:
     fi
 
   # Serverspec
-  - if [ $TEST_SUITE != "idempotence" ]; then rake spec:$TEST_SUITE; fi
+  - if [ $TEST_SUITE != "idempotence" ]; then bundle exec rake spec:$TEST_SUITE; fi
 
 after_script:
   - rake environment:destroy
