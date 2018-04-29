@@ -1,7 +1,7 @@
 require "serverspec"
 require_relative "environments"
 
-Dir[File.join(File.dirname(__FILE__), "shared", "*.rb")].each { |file| require_relative file }
+Dir[File.join(File.dirname(File.dirname(__FILE__)), "shared", "*.rb")].each { |file| require_relative file }
 
 if ENV["CONTINUOUS_INTEGRATION"] == "true"
   set :backend, :docker

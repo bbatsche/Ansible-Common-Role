@@ -1,6 +1,7 @@
 require 'net/ssh'
 require 'shellwords'
 require 'tempfile'
+require_relative "exec_error"
 
 class VagrantEnv
   attr_reader :name
