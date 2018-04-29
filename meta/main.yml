@@ -3,12 +3,13 @@ galaxy_info:
   author: Ben Batschelet
   description:
   license: MIT
-  min_ansible_version: 2.1
+  min_ansible_version: 2.4
   platforms:
   - name: Ubuntu
     versions:
     - trusty
     - xenial
+    - bionic
   galaxy_tags: []
     # List tags for your role here, one per line. A tag is
     # a keyword that describes and categorizes the role.

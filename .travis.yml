@@ -1,61 +1,65 @@
 ---
 sudo: required
-dist: trusty
 
 services:
   - docker
 
 language: generic
 cache:
-  bundler: true
-  pip: true
-  apt: true
   directories:
-    - $HOME/.ansible/roles
+    - vendor/bundle
+    - $HOME/.cache/pip
+    - $HOME/.local
+    - roles
 
 env:
-  - ANSIBLE_VERSION="2.1"
-  - ANSIBLE_VERSION="2.2"
-  - ANSIBLE_VERSION="2.3"
-  - ANSIBLE_VERSION="2.4"
+  - ANSIBLE_VERSION="2.4" TEST_SUITE=idempotence
+  - ANSIBLE_VERSION="2.5" TEST_SUITE=idempotence
+  - ANSIBLE_VERSION="2.4" TEST_SUITE=trusty
+  - ANSIBLE_VERSION="2.5" TEST_SUITE=trusty
+  - ANSIBLE_VERSION="2.4" TEST_SUITE=xenial
+  - ANSIBLE_VERSION="2.5" TEST_SUITE=xenial
+  - ANSIBLE_VERSION="2.4" TEST_SUITE=bionic
+  - ANSIBLE_VERSION="2.5" TEST_SUITE=bionic
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y -o Dpkg::Options::="--force-confold" docker-ce
+  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "trusty" ]; then docker pull ubuntu:trusty; fi
+  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "xenial" ]; then docker pull ubuntu:xenial; fi
+  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "bionic" ]; then docker pull ubuntu:bionic; fi
 
-  - docker pull ubuntu:trusty
-  - docker pull ubuntu:xenial
-
-  - travis_retry bundle install
+  - travis_retry bundle install --deployment
 
 install:
-  - travis_retry sudo -H pip install ansible==${ANSIBLE_VERSION}.*
+  - travis_retry pip install --user -U ansible==${ANSIBLE_VERSION}.*
 
-  - travis_retry sudo ansible-galaxy install bbatsche.Base
+  - travis_retry ansible-galaxy install bbatsche.Base
 
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible
 
-  - travis_wait rake environment:provision
+  - if [ $TEST_SUITE = "idempotence" ]; then travis_wait bundle exec rake environment:provision; fi
+  - if [ $TEST_SUITE != "idempotence" ]; then travis_wait bundle exec rake environment:${TEST_SUITE}:provision; fi
 
 script:
   # Syntax check
-  - ansible-playbook travis-playbook.yml --syntax-check
+  - if [ $TEST_SUITE = "idempotence" ]; then ansible-playbook travis-playbook.yml --syntax-check; fi
 
   # Play test
-  - rake ansible:playbook[travis-playbook.yml]
+  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook[travis-playbook.yml]; fi
 
   # Idempotence test
-  - rake ansible:playbook[travis-playbook.yml] > idempotence.out
+  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook[travis-playbook.yml] > idempotence.out; fi
   - >
+    if [ $TEST_SUITE = "idempotence" ]; then
     grep -q "changed=0.*failed=0" idempotence.out
-    && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1)
+    && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && cat idempotence.out && exit 1);
+    fi
 
   # Serverspec
-  - rake spec
+  - if [ $TEST_SUITE != "idempotence" ]; then bundle exec rake spec:$TEST_SUITE; fi
 
 after_script:
-  - rake environment:destroy
+  - bundle exec rake environment:destroy
 
 notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/

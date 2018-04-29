@@ -1,4 +1,4 @@
-require_relative "bootstrap"
+require_relative "lib/bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
@@ -34,6 +34,13 @@ describe command("lsb_release -a") do
     it "is Xenial Xerus" do
       expect(subject.stdout).to match /^Release:\s+16.04$/
       expect(subject.stdout).to match /^Codename:\s+xenial$/
+    end
+  end
+
+  if os[:release] == "18.04"
+    it "is Bionic Bever" do
+      expect(subject.stdout).to match /^Release:\s+18.04$/
+      expect(subject.stdout).to match /^Codename:\s+bionic$/
     end
   end
 end
