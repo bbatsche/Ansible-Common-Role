@@ -5,9 +5,9 @@ require_relative "vagrant_env"
 if ENV["CONTINUOUS_INTEGRATION"] == "true"
   # CI server will use docker for environments
   [
-    {:name => "trusty", :image => "ubuntu:trusty"},
-    {:name => "xenial", :image => "ubuntu:xenial"},
-    {:name => "bionic", :image => "ubuntu:bionic"}
+    {:name => "trusty", :image => Docker::Image.create("fromImage" => "ubuntu:trusty")},
+    {:name => "xenial", :image => Docker::Image.create("fromImage" => "ubuntu:xenial")},
+    {:name => "bionic", :image => Docker::Image.build("from ubuntu:bionic\nrun apt-get update && apt-get install -y init")}
   ].each do |vm|
     AnsibleHelper << DockerEnv.new(vm[:name], vm[:image])
   end
