@@ -2,26 +2,20 @@
 - include: sysctl.yml
   tags: [sysctl]
 
-- include: updates.yml
+- include_tasks: updates.yml
   tags: [apt]
 
-- include: timezone.yml
-  tags: [timezone]
+- name: Configure Vim
+  copy:
+    src: vimrc
+    dest: /etc/vim/vimrc
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
 
-- include: swap.yml
-  tags: [swap]
-
-- include: ruby.yml
-  tags: [ruby]
-
-- include: nodejs.yml
-  tags: [node]
-
-- include: dev-tools.yml
-  tags: [node, ruby]
-
-- include: bash-profile.yml
+- include_tasks: bash-profile.yml
   tags: [bash]
 
-- include: acl.yml
+- include_tasks: acl.yml
   tags: [acl]
