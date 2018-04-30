@@ -1,6 +1,4 @@
-require_relative "lib/ansible_helper"
-require_relative "bootstrap"
-require_relative "shared/bash"
+require_relative "lib/bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do

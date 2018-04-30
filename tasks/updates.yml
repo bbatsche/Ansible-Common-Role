@@ -1,11 +1,4 @@
 ---
-# Considered deprecated some time after Xenial
-- name: Update APT Keys
-  script: update-apt-keys.pl
-  become: yes
-  register: apt_key_result
-  changed_when: apt_key_result.stdout | int != 0
-
 # Required before we can update APT
 - name: Install Aptitude
   apt: pkg=aptitude state=present
@@ -19,7 +12,6 @@
   apt: pkg={{ item }} state=present
   become: yes
   with_items:
-    - unattended-upgrades
     - update-notifier-common
     - apt-transport-https
     - landscape-client
@@ -35,37 +27,4 @@
 
 - name: Remove Ubuntu Advantage from Motd
   file: name=/etc/update-motd.d/51-cloudguest state=absent
-  become: yes
-
-- name: Configure Unattended Upgrades
-  copy:
-    src: 50unattended-upgrades
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades
-    owner: root
-    group: root
-    mode: 0644
-  become: yes
-
-- name: Configure APT Periodic Settings
-  lineinfile:
-    dest: /etc/apt/apt.conf.d/10periodic
-    line: '{{ item.key }} "{{ item.value }}";'
-    regexp: "^{{ item.key }}"
-    state: present
-    create: yes
-  with_items:
-    - { key: "APT::Periodic::AutocleanInterval",    value: 7 }
-    - { key: "APT::Periodic::Update-Package-Lists", value: 1 }
-  become: yes
-
-- name: Configure Unattended Upgrades
-  lineinfile:
-    dest: /etc/apt/apt.conf.d/20auto-upgrades
-    line: '{{ item.key }} "{{ item.value }}";'
-    regexp: "^{{ item.key }}"
-    state: present
-    create: yes
-  with_items:
-    - { key: "APT::Periodic::Update-Package-Lists", value: 1 }
-    - { key: "APT::Periodic::Unattended-Upgrade",   value: 1 }
   become: yes
