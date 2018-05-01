@@ -1,41 +1,46 @@
-require_relative "lib/ansible_helper"
-require_relative "bootstrap"
+require_relative "lib/bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
     AnsibleHelper.playbook "playbooks/acl.yml"
+
+    Specinfra::Runner.set_config :ssh, nil # kill existing SSH connection
   end
 end
 
-describe group("web-admin") do
+describe group "web-admin" do
   it { should exist }
 end
 
-describe group("www-data") do
+describe group "www-data" do
   it { should exist }
 end
 
-describe user(command("whoami").stdout.strip) do
+describe user command("whoami").stdout.strip do
   it { should belong_to_group "web-admin" }
   it { should belong_to_group "www-data" }
 end
 
-describe command("setfacl -m g:web-admin:rwx,d:g:web-admin:rwx $HOME/acl_test") do
-  let(:disable_sudo) { false }
-
-  describe "setting file ACL" do
-    include_examples "no errors"
-  end
-end
-
-describe command("touch $HOME/acl_test/test") do
+context "File ACLs" do
   after :all do
     set :disable_sudo, false
     raise "Cleanup Failed" if command("rm -rf $HOME/acl_test").exit_status != 0
-    set :disable_sudo, true
   end
 
-  describe "using file ACLs" do
+
+  describe "Setting ACL" do
+    set :disable_sudo, false
+
+    let(:subject) { command "setfacl -m g:web-admin:rwx,d:g:web-admin:rwx $HOME/acl_test" }
+
+    include_examples "no errors"
+  end
+
+  describe "Writing data using ACL" do
+    set :disable_sudo, true
+
+    let(:subject) { command "touch $HOME/acl_test/test" }
+
     include_examples "no errors"
   end
 end

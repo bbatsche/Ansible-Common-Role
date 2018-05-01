@@ -28,4 +28,5 @@
     - group_added is changed
     - ansible_connection | default('smart') != 'local'
     - ansible_connection | default('smart') != 'docker'
-# meta: reset_connection when support for 2.1 and 2.2 is dropped
+# meta: reset_connection currently has issues targetting the correct control path:
+# https://github.com/ansible/ansible/issues/27520

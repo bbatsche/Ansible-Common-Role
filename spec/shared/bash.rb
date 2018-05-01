@@ -1,6 +1,6 @@
 require "serverspec"
 
-shared_examples "bash::aliases" do
+shared_examples "bash aliases" do
   it "should use long format" do
     expect(subject.stdout).to match /^-rw-r--r--\s+\d+\s+root\s+root.+test$/
   end
@@ -10,13 +10,13 @@ shared_examples "bash::aliases" do
   end
 end
 
-shared_examples "bash::regular_files" do
+shared_examples "bash regular files" do
   it "should not include hidden files" do
     expect(subject.stdout).to_not match /\.test.?$/
   end
 end
 
-shared_examples "bash::hidden_files" do
+shared_examples "bash hidden files" do
   it "should include hidden files" do
     expect(subject.stdout).to match /\.test.?$/
   end

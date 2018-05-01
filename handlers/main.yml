@@ -1,24 +1,10 @@
 ---
-- name: Restart Redis
-  service: name=redis-server state=restarted
-  become: yes
-
-- name: Turn on Swap
-  command: swapon -ae
-  become: yes
-
 - name: Restart Procps
   service: name=procps state=restarted
   become: yes
+  when: ansible_connection | default('smart') != 'docker'
 
 - name: Remount Root
   command: mount -o remount / warn=no
   become: yes
-
-- name: Restart Beanstalk
-  service: name=beanstalkd state=restarted
-  become: yes
-
-- name: Restart Supervisor
-  service: name=supervisor state=restarted
-  become: yes
+  when: ansible_connection | default('smart') != 'docker'

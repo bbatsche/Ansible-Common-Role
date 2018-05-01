@@ -1,7 +1,3 @@
 ---
-env_name: dev
-timezone: Etc/UTC
-swap_mb: 0
-swap_path: /swap
 shmmax_percent: 50
 shmall_percent: 50

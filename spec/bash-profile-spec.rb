@@ -1,6 +1,4 @@
-require_relative "lib/ansible_helper"
-require_relative "bootstrap"
-require_relative "shared/bash"
+require_relative "lib/bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
@@ -13,25 +11,27 @@ describe file('/etc/profile.d/bash_completion.sh') do
   it { should be_file }
 end
 
-describe command("ll /tmp/mocks") do
-  let(:interactive_shell) { true }
+describe "ll alias" do
+  set :interactive_shell, true
+  let(:subject) { command "ll /tmp/mocks" }
 
-  include_examples "bash::aliases"
-  include_examples "bash::regular_files"
+  include_examples "bash aliases"
+  include_examples "bash regular files"
 
-  it "should not cause any errors" do
+  it "should have no errors" do
     expect(subject.stderr).to_not match /ll: command not found/
     expect(subject.exit_status).to eq 0
   end
 end
 
-describe command("la /tmp/mocks") do
-  let(:interactive_shell) { true }
+describe "la alias" do
+  set :interactive_shell, true
+  let(:subject) { command "la /tmp/mocks" }
 
-  include_examples "bash::aliases"
-  include_examples "bash::hidden_files"
+  include_examples "bash aliases"
+  include_examples "bash hidden files"
 
-  it "should not cause any errors" do
+  it "should have no errors" do
     expect(subject.stderr).to_not match /la: command not found/
     expect(subject.exit_status).to eq 0
   end

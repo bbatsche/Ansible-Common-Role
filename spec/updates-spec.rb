@@ -1,5 +1,4 @@
-require_relative "lib/ansible_helper"
-require_relative "bootstrap"
+require_relative "lib/bootstrap"
 
 RSpec.configure do |config|
   config.before :suite do
@@ -7,34 +6,30 @@ RSpec.configure do |config|
   end
 end
 
-describe command("aptitude --version") do
-  pattern = if os[:release] == "14.04" then /^aptitude 0\.6\.\d/ else /^aptitude 0\.7\.\d/ end
+describe "Aptitude" do
+  let(:aptitude_version) {
+    {
+        "14.04" => "0.6.",
+        "16.04" => "0.7.",
+        "18.04" => "0.8."
+    }[os[:release]]
+  }
+  let(:subject) { command "aptitude --version" }
 
-  it "should have aptitude installed" do
-    expect(subject.stdout).to match pattern
+  it "should be installed" do
+    expect(subject.stdout).to match /^aptitude #{Regexp.quote(aptitude_version)}\d/
   end
 
   include_examples "no errors"
 end
 
-describe command("landscape-sysinfo") do
+describe "Landscape" do
   let(:disable_sudo) { false } # landscape client config is not readable by normal users
+  let(:subject) { command "landscape-sysinfo" }
 
   it "should not include a link to canonical" do
     expect(subject.stdout).not_to match /Graph this data and manage this system at/
     expect(subject.stdout).not_to match /landscape.canonical.com/
-  end
-
-  include_examples "no errors"
-end
-
-describe command("unattended-upgrade --dry-run --verbose") do
-  let(:disable_sudo) { false }
-
-  codename = if os[:release] == "14.04" then "trusty" else "xenial" end
-
-  it "should have just security and ESM origins" do
-    expect(subject.stdout).to match /^Allowed origins are: \['o=Ubuntu,a=#{Regexp.quote(codename)}-security', 'o=UbuntuESM,a=#{Regexp.quote(codename)}'\]$/
   end
 
   include_examples "no errors"
