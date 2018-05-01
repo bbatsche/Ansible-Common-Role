@@ -12,15 +12,7 @@ galaxy_info:
     - bionic
   galaxy_tags:
   - bash
-  - bower
   - development
-  - git
-  - grunt
-  - gulp
-  - node
-  - ruby
-  - sass
   - system
   - web
-  - yarn
 dependencies: []
