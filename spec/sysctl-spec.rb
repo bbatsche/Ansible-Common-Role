@@ -10,13 +10,13 @@ RSpec.configure do |config|
   end
 end
 
-describe linux_kernel_parameter("kernel.pid_max") do
+describe linux_kernel_parameter "kernel.pid_max" do
   it "should be increased" do
     expect(subject.value).to be > 32768
   end
 end
 
-describe linux_kernel_parameter("fs.file-max") do
+describe linux_kernel_parameter "fs.file-max" do
   # convert to MB
   totalMem = host_inventory["memory"]["total"].to_i / 1024
 
@@ -25,7 +25,7 @@ describe linux_kernel_parameter("fs.file-max") do
   end
 end
 
-describe linux_kernel_parameter("kernel.shmmax") do
+describe linux_kernel_parameter "kernel.shmmax" do
   # convert to bytes
   totalMem = host_inventory["memory"]["total"].to_i * 1024
 
@@ -35,7 +35,7 @@ describe linux_kernel_parameter("kernel.shmmax") do
   end
 end
 
-describe linux_kernel_parameter("kernel.shmall") do
+describe linux_kernel_parameter "kernel.shmall" do
   # convert to pages
   totalMem = host_inventory["memory"]["total"].to_i * 1024 / 4096
 

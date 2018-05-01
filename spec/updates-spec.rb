@@ -6,25 +6,26 @@ RSpec.configure do |config|
   end
 end
 
-
-describe command("aptitude --version") do
-  aptititudeVersions = {
-    "14.04" => "0.6.",
-    "16.04" => "0.7.",
-    "18.04" => "0.8."
+describe "Aptitude" do
+  let(:aptitude_version) {
+    {
+        "14.04" => "0.6.",
+        "16.04" => "0.7.",
+        "18.04" => "0.8."
+    }[os[:release]]
   }
+  let(:subject) { command "aptitude --version" }
 
-  version = aptititudeVersions[os[:release]]
-
-  it "should have aptitude installed" do
-    expect(subject.stdout).to match /^aptitude #{Regexp.quote(version)}\d/
+  it "should be installed" do
+    expect(subject.stdout).to match /^aptitude #{Regexp.quote(aptitude_version)}\d/
   end
 
   include_examples "no errors"
 end
 
-describe command("landscape-sysinfo") do
+describe "Landscape" do
   let(:disable_sudo) { false } # landscape client config is not readable by normal users
+  let(:subject) { command "landscape-sysinfo" }
 
   it "should not include a link to canonical" do
     expect(subject.stdout).not_to match /Graph this data and manage this system at/
