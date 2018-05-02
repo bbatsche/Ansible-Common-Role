@@ -1,5 +1,5 @@
 ---
-- include: sysctl.yml
+- include_tasks: sysctl.yml
   tags: [sysctl]
 
 - include_tasks: updates.yml
