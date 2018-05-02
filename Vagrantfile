@@ -18,8 +18,6 @@ Vagrant.configure('2') do |config|
     ansible.playbook = "provision-playbook.yml"
 
     ansible.compatibility_mode = "2.0"
-
-    ansible.skip_tags = ["timezone", "sysctl", "ruby", "node"]
   end
 
   if Vagrant.has_plugin? 'vagrant-vbguest'
