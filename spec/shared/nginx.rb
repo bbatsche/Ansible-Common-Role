@@ -19,10 +19,6 @@ shared_examples "nginx" do |use_ssl=false|
       expect(subject.stderr).to match %r{--error-log-path=/var/log/nginx/error\.log}
     end
 
-    it "has Phusion Passenger enabled" do
-      expect(subject.stderr).to match %r{--add-module=[[:graph:]]+/passenger/src/nginx_module}
-    end
-
     it "has no errors" do
       expect(subject.exit_status).to eq 0
     end
