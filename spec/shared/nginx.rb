@@ -41,29 +41,29 @@ end
 
 shared_examples "curl request" do |code|
   it "responds with status #{code}" do
-    expect(subject.stdout).to match %r{^HTTP/1\.1 #{Regexp.quote(code)}}
+    expect(subject.stdout).to match %r{^HTTP/(1\.1|2) #{Regexp.quote(code)}}
   end
 end
 
 shared_examples "curl request html" do
   it "tells IE to use the latest version" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^X-UA-Compatible: IE=Edge$/
+    expect(subject.stdout.gsub(/\r/, '')).to match /^X-UA-Compatible: IE=Edge$/i
   end
 
   it "disallows other sites from embedding in a frame" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Frame-Options: SAMEORIGIN$/
+    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Frame-Options: SAMEORIGIN$/i
   end
 
   it "disallows content type sniffing" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Content-Type-Options: nosniff$/
+    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Content-Type-Options: nosniff$/i
   end
 
   it "enables IE's XSS script protection" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^X-XSS-Protection: 1; mode=block$/
+    expect(subject.stdout.gsub(/\r/, '')).to match /^X-XSS-Protection: 1; mode=block$/i
   end
 
   it "disables cache transforms" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^Cache-Control: no-transform$/
+    expect(subject.stdout.gsub(/\r/, '')).to match /^Cache-Control: no-transform$/i
   end
 end
 
@@ -76,7 +76,7 @@ shared_examples "access logs" do |opts|
 
   describe command("tail -n 1 #{path}") do
     it "logged the previous request" do
-      expect(subject.stdout).to match /^127\.0\.0\.1 - - \[[0-9T:+-]+\] "GET #{Regexp.quote(url)} HTTP\/1\.1" #{Regexp.quote(code)} \d+ "-" "curl\/[0-9.]+" "-"$/
+      expect(subject.stdout).to match /^127\.0\.0\.1 - - \[[0-9T:+-]+\] "GET #{Regexp.quote(url)} HTTP\/(1\.1|2\.0)" #{Regexp.quote(code)} \d+ "-" "curl\/[0-9.]+" "-"$/
     end
   end
 end
