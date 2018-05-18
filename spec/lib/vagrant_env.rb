@@ -49,13 +49,11 @@ class VagrantEnv
 
     output = []
     IO.popen(command, {:err => [:child, :out]}) do |io|
-      io.each do |line|
-        output << line.strip
-      end
+      output = io.readlines.collect(&:strip)
     end
 
-    if !$?.success?
-      raise ExecError.new("Vagrant execution error!", output)
+    unless $?.success?
+      raise ExecError.new("Ansible provision error!", output)
     end
 
     return output
