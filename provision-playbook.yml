@@ -46,6 +46,8 @@
         - lsb-release
         - lsb-core
         - netcat
+        - net-tools
+        - iproute2
 
   handlers:
     - name: Restart SSH
