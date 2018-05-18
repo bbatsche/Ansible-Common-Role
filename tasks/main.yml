@@ -5,6 +5,10 @@
 - include_tasks: updates.yml
   tags: [apt]
 
+- name: Install Vim
+  apt: name=vim state=present
+  become: yes
+
 - name: Configure Vim
   copy:
     src: vimrc
