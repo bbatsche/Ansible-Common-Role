@@ -36,7 +36,7 @@ before_install:
 install:
   - travis_retry pip install --user -U ansible==${ANSIBLE_VERSION}.*
 
-  - travis_retry ansible-galaxy install bbatsche.Base
+  - travis_retry ansible-galaxy install -r roles.yml
 
   - mkdir -p $HOME/.ansible
   - sudo chown -R $USER:$USER $HOME/.ansible

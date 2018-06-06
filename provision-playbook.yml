@@ -2,11 +2,13 @@
 - hosts: all
   gather_facts: false
 
-  vars:
-    swap_mb: 512
-
   roles:
     - bbatsche.Base
+    - role: tersmitten.swapfile
+      become: yes
+      when:
+        - ansible_connection | default('smart') != 'local'
+        - ansible_connection | default('smart') != 'docker'
 
   pre_tasks:
     - name: Install python2 for Ansible
