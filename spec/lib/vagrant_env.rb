@@ -53,7 +53,7 @@ class VagrantEnv
     end
 
     unless $?.success?
-      raise ExecError.new("Ansible provision error!", output)
+      raise ExecError.new("Vagrant exec error!", output)
     end
 
     return output
