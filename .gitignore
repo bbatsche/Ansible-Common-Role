@@ -79,3 +79,4 @@ tmtags
 ### Other Files ###
 *.log
 /roles/*
+/config.yml

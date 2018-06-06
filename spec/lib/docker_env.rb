@@ -1,5 +1,8 @@
 require "docker"
 require "tempfile"
+require "yaml"
+require "deep_merge"
+require "json"
 
 class DockerEnv
   attr_reader :name, :image
@@ -14,13 +17,19 @@ class DockerEnv
   end
 
   def provision
+    default_config_file = File.join(File.dirname(File.dirname(File.dirname(__FILE__))), "config.yml.dist")
+    local_config_file   = File.join(File.dirname(File.dirname(File.dirname(__FILE__))), "config.yml")
+
+    config_data = YAML.load_file default_config_file
+    config_data.deep_merge!(YAML.load_file local_config_file) if File.exists? local_config_file
+
     inventory = Tempfile.new("inventory")
 
     inventory << inventory_line
 
     inventory.close
 
-    command = "ansible-playbook", "-i", inventory.path, "-l", @name, "provision-playbook.yml"
+    command = "ansible-playbook", "-i", inventory.path, "-l", @name, "provision-playbook.yml", "-e", config_data["ansible"]["vars"].to_json
 
     output = []
     IO.popen(command, {:err => [:child, :out]}) do |io|
