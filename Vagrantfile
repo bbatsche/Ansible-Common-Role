@@ -21,6 +21,8 @@ Vagrant.configure("2") do |config|
         vb.cpus   = vm_config["num_cpus"]
 
         vb.linked_clone = true
+
+        vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
       end
 
       target_env.vm.provider :vmware_fusion do |vmw, override|
