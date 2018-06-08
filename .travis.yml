@@ -27,9 +27,7 @@ env:
   - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic TEST_SUITE=spec
 
 before_install:
-  - if [ $ENVIRONMENT_NAME = "trusty" ]; then docker pull ubuntu:trusty; fi
-  - if [ $ENVIRONMENT_NAME = "xenial" ]; then docker pull ubuntu:xenial; fi
-  - if [ $ENVIRONMENT_NAME = "bionic" ]; then docker pull ubuntu:bionic; fi
+  - docker pull ubuntu:${ENVIRONMENT_NAME}
 
   - travis_retry bundle install --deployment
 
