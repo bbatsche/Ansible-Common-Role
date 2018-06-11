@@ -54,7 +54,13 @@ class DockerEnv
   def container
     @container \
       || @container = Docker::Container.all(all: true, filters: { name: [name] }.to_json).first \
-      || @container = Docker::Container.create("Cmd" => ["/sbin/init"], "Image" => image.id, "name" => name, "Privileged" => true)
+      || @container = Docker::Container.create({
+        "Cmd" => ["sleep", "infinity"],
+        "Image" => image.id,
+        "name" => name,
+        "Privileged" => true,
+        "Init" => true
+      })
   end
 
   def id
