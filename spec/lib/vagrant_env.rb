@@ -35,8 +35,6 @@ class VagrantEnv
     line << " ansible_port=#{config[:port]} ansible_ssh_private_key_file=#{keyPath}"
     line << " ansible_python_interpreter=/usr/bin/python3" if use_python3
 
-    puts line
-
     return line
   end
 
