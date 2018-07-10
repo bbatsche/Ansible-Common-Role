@@ -5,6 +5,7 @@ require_relative "exec_error"
 
 class VagrantEnv
   attr_reader :name
+  attr_accessor :use_python3
 
   def initialize(name)
     @name = name
@@ -30,7 +31,11 @@ class VagrantEnv
     config  = sshConfig
     keyPath = Shellwords.escape config[:keys].first
 
-    "#{@name} ansible_host=#{config[:host_name]} ansible_user=#{config[:user]} ansible_port=#{config[:port]} ansible_ssh_private_key_file=#{keyPath}"
+    line = "#{name} ansible_host=#{config[:host_name]} ansible_user=#{config[:user]}"
+    line << " ansible_port=#{config[:port]} ansible_ssh_private_key_file=#{keyPath}"
+    line << " ansible_python_interpreter=/usr/bin/python3" if use_python3
+
+    return line
   end
 
   def sshConfig
@@ -39,23 +44,21 @@ class VagrantEnv
     configFile.write exec("ssh-config").join("\n")
     configFile.close
 
-    Net::SSH::Config.for(@name, [configFile.path])
+    Net::SSH::Config.for(name, [configFile.path])
   ensure
     configFile.unlink unless configFile.nil?
   end
 
   def exec(command, flags=[])
-    command = ["vagrant", command, @name] + flags
+    command = ["vagrant", command, name] + flags
 
     output = []
     IO.popen(command, {:err => [:child, :out]}) do |io|
-      io.each do |line|
-        output << line.strip
-      end
+      output = io.readlines.collect(&:strip)
     end
 
-    if !$?.success?
-      raise ExecError.new("Vagrant execution error!", output)
+    unless $?.success?
+      raise ExecError.new("Vagrant exec error!", output)
     end
 
     return output
