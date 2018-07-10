@@ -1,0 +1,14 @@
+---
+vm:
+  global:
+    ram: 1024
+    num_cpus: 2
+  trusty:
+    box: ubuntu/trusty64
+  xenial:
+    box: ubuntu/xenial64
+  bionic:
+    box: ubuntu/bionic64
+ansible:
+  vars:
+    swap_file_size_mb: "1024"

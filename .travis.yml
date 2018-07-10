@@ -1,14 +1,14 @@
 ---
 sudo: required
 
+language: python
+python:
+  - "2.7"
+
 services:
   - docker
 
-language: generic
 cache:
-  bundler: true
-  pip: true
-  apt: true
   directories:
     - vendor/bundle
     - $HOME/.cache/pip
@@ -16,40 +16,45 @@ cache:
     - roles
 
 env:
-  - ANSIBLE_VERSION="2.4" TEST_SUITE=idempotence
-  - ANSIBLE_VERSION="2.5" TEST_SUITE=idempotence
-  - ANSIBLE_VERSION="2.4" TEST_SUITE=trusty
-  - ANSIBLE_VERSION="2.5" TEST_SUITE=trusty
-  - ANSIBLE_VERSION="2.4" TEST_SUITE=xenial
-  - ANSIBLE_VERSION="2.5" TEST_SUITE=xenial
-  - ANSIBLE_VERSION="2.4" TEST_SUITE=bionic
-  - ANSIBLE_VERSION="2.5" TEST_SUITE=bionic
+  - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=trusty TEST_SUITE=idempotence
+  - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=xenial TEST_SUITE=idempotence
+  - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
+  - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
+  - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
+  - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=trusty TEST_SUITE=spec
+  - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=xenial TEST_SUITE=spec
+  - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=bionic TEST_SUITE=spec
+  - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic TEST_SUITE=spec
+  - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic TEST_SUITE=spec
+
+matrix:
+  include:
+    - python: "3.6"
+      env: ANSIBLE_VERSION="2.6" ANSIBLE_PYTHON_VERSION=3 ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
+    - python: "3.6"
+      env: ANSIBLE_VERSION="2.6" ANSIBLE_PYTHON_VERSION=3 ENVIRONMENT_NAME=bionic TEST_SUITE=spec
 
 before_install:
-  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "trusty" ]; then docker pull ubuntu:trusty; fi
-  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "xenial" ]; then docker pull ubuntu:xenial; fi
-  - if [ $TEST_SUITE = "idempotence" -o $TEST_SUITE = "bionic" ]; then docker pull ubuntu:bionic; fi
+  - docker pull ubuntu:${ENVIRONMENT_NAME}
 
   - travis_retry bundle install --deployment
 
 install:
-  - travis_retry pip install --user -U ansible==${ANSIBLE_VERSION}.*
+  - travis_retry pip install -U ansible==${ANSIBLE_VERSION}.*
 
-  - mkdir -p $HOME/.ansible
-  - sudo chown -R $USER:$USER $HOME/.ansible
+  - travis_retry ansible-galaxy install -r roles.yml
 
-  - if [ $TEST_SUITE = "idempotence" ]; then travis_wait bundle exec rake environment:provision; fi
-  - if [ $TEST_SUITE != "idempotence" ]; then travis_wait bundle exec rake environment:${TEST_SUITE}:provision; fi
+  - travis_wait bundle exec rake environment:${ENVIRONMENT_NAME}:provision
 
 script:
   # Syntax check
   - if [ $TEST_SUITE = "idempotence" ]; then ansible-playbook travis-playbook.yml --syntax-check; fi
 
   # Play test
-  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook[travis-playbook.yml]; fi
+  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook:$ENVIRONMENT_NAME[travis-playbook.yml]; fi
 
   # Idempotence test
-  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook[travis-playbook.yml] > idempotence.out; fi
+  - if [ $TEST_SUITE = "idempotence" ]; then bundle exec rake ansible:playbook:$ENVIRONMENT_NAME[travis-playbook.yml] > idempotence.out; fi
   - >
     if [ $TEST_SUITE = "idempotence" ]; then
     grep -q "changed=0.*failed=0" idempotence.out
@@ -57,7 +62,7 @@ script:
     fi
 
   # Serverspec
-  - if [ $TEST_SUITE != "idempotence" ]; then bundle exec rake spec:$TEST_SUITE; fi
+  - if [ $TEST_SUITE = "spec" ]; then bundle exec rake spec:$ENVIRONMENT_NAME; fi
 
 after_script:
   - bundle exec rake environment:destroy
