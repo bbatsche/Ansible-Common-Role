@@ -46,6 +46,12 @@ Vagrant.configure("2") do |config|
     ansible.compatibility_mode = "2.0"
 
     ansible.extra_vars = config_data["ansible"]["vars"]
+
+    ansible.groups = {
+      "vagrant" => ["trusty", "xenial", "bionic"]
+    }
+
+    ansible.groups["vagrant:vars"] = { "ansible_python_interpreter" => "/usr/bin/python3" } if ENV["ANSIBLE_PYTHON_VERSION"] == "3"
   end
 
   if Vagrant.has_plugin? 'vagrant-vbguest'

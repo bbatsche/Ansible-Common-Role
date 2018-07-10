@@ -11,4 +11,4 @@ vm:
     box: ubuntu/bionic64
 ansible:
   vars:
-    swapfile_size: 1G
+    swap_file_size_mb: "1024"

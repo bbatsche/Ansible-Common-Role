@@ -1,10 +1,13 @@
 ---
 sudo: required
 
+language: python
+python:
+  - "2.7"
+
 services:
   - docker
 
-language: generic
 cache:
   directories:
     - vendor/bundle
@@ -13,24 +16,23 @@ cache:
     - roles
 
 env:
-  - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=trusty TEST_SUITE=idempotence
-  - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=trusty TEST_SUITE=idempotence
   - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=trusty TEST_SUITE=idempotence
-  - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=xenial TEST_SUITE=idempotence
-  - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=xenial TEST_SUITE=idempotence
   - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=xenial TEST_SUITE=idempotence
   - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
   - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
   - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
-  - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=trusty TEST_SUITE=spec
-  - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=trusty TEST_SUITE=spec
   - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=trusty TEST_SUITE=spec
-  - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=xenial TEST_SUITE=spec
-  - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=xenial TEST_SUITE=spec
   - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=xenial TEST_SUITE=spec
   - ANSIBLE_VERSION="2.4" ENVIRONMENT_NAME=bionic TEST_SUITE=spec
   - ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic TEST_SUITE=spec
   - ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic TEST_SUITE=spec
+
+matrix:
+  include:
+    - python: "3.6"
+      env: ANSIBLE_VERSION="2.6" ANSIBLE_PYTHON_VERSION=3 ENVIRONMENT_NAME=bionic TEST_SUITE=idempotence
+    - python: "3.6"
+      env: ANSIBLE_VERSION="2.6" ANSIBLE_PYTHON_VERSION=3 ENVIRONMENT_NAME=bionic TEST_SUITE=spec
 
 before_install:
   - docker pull ubuntu:${ENVIRONMENT_NAME}
@@ -38,12 +40,9 @@ before_install:
   - travis_retry bundle install --deployment
 
 install:
-  - travis_retry pip install --user -U ansible==${ANSIBLE_VERSION}.*
+  - travis_retry pip install -U ansible==${ANSIBLE_VERSION}.*
 
   - travis_retry ansible-galaxy install -r roles.yml
-
-  - mkdir -p $HOME/.ansible
-  - sudo chown -R $USER:$USER $HOME/.ansible
 
   - travis_wait bundle exec rake environment:${ENVIRONMENT_NAME}:provision
 

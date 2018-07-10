@@ -2,17 +2,22 @@
 - hosts: all
   gather_facts: false
 
+  vars:
+    use_python3: "{{ lookup('env', 'ANSIBLE_PYTHON_VERSION') == '3' }}"
+
   roles:
     - bbatsche.Base
-    - role: tersmitten.swapfile
+    - role: geerlingguy.swap
       become: yes
       when:
         - ansible_connection | default('smart') != 'local'
         - ansible_connection | default('smart') != 'docker'
 
   pre_tasks:
-    - name: Install python2 for Ansible
-      raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+    - name: Install Python for Ansible
+      raw: >
+        bash -c "test -e /usr/bin/python{{ "3" if use_python3 else "" }} ||
+        (apt -qqy update && apt install -qqy python{{ "3" if use_python3 else "" }}-minimal)"
       become: yes
       register: output
       changed_when:
