@@ -2,7 +2,10 @@ Base Ansible Role
 =================
 
 [![Build Status](https://travis-ci.org/bbatsche/Ansible-Common-Role.svg)](https://travis-ci.org/bbatsche/Ansible-Common-Role)
-[![Ansible Galaxy](https://img.shields.io/ansible/role/8765.svg)](https://galaxy.ansible.com/bbatsche/Base)
+[![License](https://img.shields.io/github/license/bbatsche/Ansible-Common-Role.svg)](LICENSE)
+[![Role Name](https://img.shields.io/ansible/role/27191.svg)](https://galaxy.ansible.com/bbatsche/Base)
+[![Release Version](https://img.shields.io/github/tag/bbatsche/Ansible-Common-Role.svg)](https://galaxy.ansible.com/bbatsche/Base)
+[![Downloads](https://img.shields.io/ansible/role/d/27191.svg)](https://galaxy.ansible.com/bbatsche/Base)
 
 This Ansible role does some simple configuration and settings for a system doing web development. It does the following:
 
