@@ -2,9 +2,7 @@ require "serverspec"
 require "date"
 
 shared_examples "nginx" do |use_ssl=false|
-  describe command("nginx -t") do
-    let(:disable_sudo) { false }
-
+  describe command("nginx -t"), :sudo => true do
     it "has no errors" do
       expect(subject.stderr).to match /configuration file [[:graph:]]+ syntax is ok/
       expect(subject.stderr).to match /configuration file [[:graph:]]+ test is successful/

@@ -9,12 +9,13 @@
   become: yes
 
 - name: Install APT & Ubuntu Utils
-  apt: pkg={{ item }} state=present
+  apt:
+    name:
+      - update-notifier-common
+      - apt-transport-https
+      - landscape-client
+    state: present
   become: yes
-  with_items:
-    - update-notifier-common
-    - apt-transport-https
-    - landscape-client
 
 - name: Configure Landscape Sysinfo
   copy:

@@ -23,8 +23,7 @@ describe "Aptitude" do
   include_examples "no errors"
 end
 
-describe "Landscape" do
-  let(:disable_sudo) { false } # landscape client config is not readable by normal users
+describe "Landscape", :sudo => true do
   let(:subject) { command "landscape-sysinfo" }
 
   it "should not include a link to canonical" do

@@ -46,14 +46,17 @@
         - ansible_connection | default('smart') != 'docker'
 
     - name: Install Spec Dependencies
-      apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
+      apt:
+        name:
+          - lsb-release
+          - lsb-core
+          - netcat
+          - net-tools
+          - iproute2
+        state: present
+        update_cache: yes
+        cache_valid_time: 86400
       become: yes
-      with_items:
-        - lsb-release
-        - lsb-core
-        - netcat
-        - net-tools
-        - iproute2
 
   handlers:
     - name: Restart SSH

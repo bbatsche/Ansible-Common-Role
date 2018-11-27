@@ -6,8 +6,8 @@ RSpec.configure do |config|
   end
 end
 
-describe command %Q{su -l test_user -c 'bash -ic "ll /tmp/mocks"'} do
-  let(:disable_sudo) { false }
+describe "ll as test_user", :sudo => true do
+  let(:subject) { command %Q{su -l test_user -c 'bash -ic "ll /tmp/mocks"'} }
 
   include_examples "bash aliases"
   include_examples "bash regular files"
@@ -18,8 +18,8 @@ describe command %Q{su -l test_user -c 'bash -ic "ll /tmp/mocks"'} do
   end
 end
 
-describe command %Q{su -l test_user -c 'bash -ic "la /tmp/mocks"'} do
-  let(:disable_sudo) { false }
+describe 'la as test_user', :sudo => true do
+  let(:subject) { command %Q{su -l test_user -c 'bash -ic "la /tmp/mocks"'} }
 
   include_examples "bash aliases"
   include_examples "bash hidden files"
