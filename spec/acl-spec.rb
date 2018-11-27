@@ -28,17 +28,13 @@ context "File ACLs" do
   end
 
 
-  describe "Setting ACL" do
-    set :disable_sudo, false
-
+  describe "Setting ACL", :sudo => true do
     let(:subject) { command "setfacl -m g:web-admin:rwx,d:g:web-admin:rwx $HOME/acl_test" }
 
     include_examples "no errors"
   end
 
   describe "Writing data using ACL" do
-    set :disable_sudo, true
-
     let(:subject) { command "touch $HOME/acl_test/test" }
 
     include_examples "no errors"

@@ -21,7 +21,7 @@
     line: "alias {{ item.alias }}='{{ item.command }}'"
     regexp: "^alias {{ item.alias }}="
     state: present
-  with_items:
+  loop:
     - { alias: ll, command: "ls -lFh" }
     - { alias: la, command: "ls -lFhA" }
     - { alias: l,  command: "ls -CF" }
@@ -32,7 +32,7 @@
     line: "{{ item.key }}={{ item.value }}"
     regexp: '^#?\s*{{ item.key }}='
     state: present
-  with_items:
+  loop:
     - { key: HISTCONTROL,  value: ignoreboth }
     - { key: HISTSIZE,     value: 100000 }
     - { key: HISTFILESIZE, value: 100000 }
@@ -44,7 +44,7 @@
     line: "shopt -s {{ item }}"
     regexp: '^#?\s*shopt -s {{ item }}'
     state: present
-  with_items:
+  loop:
     - checkwinsize
     - globstar
     - histappend
@@ -71,7 +71,7 @@
     line: "{{ item }}"
     state: present
   become: yes
-  with_items:
+  loop:
     - '"\e[B": history-search-forward'
     - '"\e[A": history-search-backward'
 
