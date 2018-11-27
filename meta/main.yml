@@ -3,7 +3,7 @@ galaxy_info:
   author: Ben Batschelet
   description: A basic role providing some common development tools and system configurations for doing full stack web development
   license: MIT
-  min_ansible_version: 2.4
+  min_ansible_version: 2.5
   platforms:
   - name: Ubuntu
     versions:
