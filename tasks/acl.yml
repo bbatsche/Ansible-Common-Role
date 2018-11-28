@@ -4,12 +4,12 @@
   become: yes
   notify: Remount Root
 
-- name: Create Web Admin Group
+- name: Create Web Groups
   group: name={{ item }}
   with_items: "{{ default_groups }}"
   become: yes
 
-- name: Add Console User to Web Admin Group
+- name: Add Console User to Web Groups
   user:
     name:   "{{ console_user | default(ansible_user) }}"
     groups: "{{ item }}"

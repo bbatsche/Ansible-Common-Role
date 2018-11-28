@@ -16,9 +16,14 @@ describe group "www-data" do
   it { should exist }
 end
 
+describe group "adm" do
+  it { should exist }
+end
+
 describe user command("whoami").stdout.strip do
   it { should belong_to_group "web-admin" }
   it { should belong_to_group "www-data" }
+  it { should belong_to_group "adm" }
 end
 
 context "File ACLs" do

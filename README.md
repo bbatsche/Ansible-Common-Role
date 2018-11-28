@@ -23,7 +23,7 @@ Role Variables
 - `console_user` &mdash; If you are setting up a new user for your server, you can use this value to install the BASH profile for that user. Default is `ansible_user`
 - `shmmax_percent` &mdash; Percentage of available memory to use for `kernel.shmmax`. Default is "50".
 - `shmall_percent` &mdash; Percentage of available memory to use for `kernel.shmall`. Default is "50".
-- `default_groups` &mdash; Groups to add the Ansible user or `console_user` to. Values are "web-admin" and "www-data".
+- `default_groups` &mdash; Groups to add the Ansible user or `console_user` to. Values are "web-admin", "www-data", and "adm".
 
 Example Playbook
 ----------------
