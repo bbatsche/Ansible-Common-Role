@@ -49,7 +49,7 @@ shared_examples "curl request html" do
   end
 
   it "disallows other sites from embedding in a frame" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Frame-Options: SAMEORIGIN$/i
+    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Frame-Options: DENY$/i
   end
 
   it "disallows content type sniffing" do
