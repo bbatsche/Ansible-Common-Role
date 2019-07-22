@@ -19,48 +19,48 @@ jobs:
   include:
     - stage: Spec
       name: Trusty
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=trusty
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=trusty
       script: bundle exec rake spec:$ENVIRONMENT_NAME
     - name: Xenial
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=xenial
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=xenial
       script: bundle exec rake spec:$ENVIRONMENT_NAME
     - name: Bionic
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=bionic
       script: bundle exec rake spec:$ENVIRONMENT_NAME
 
     - name: Ansible 2.5
       env: ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic
       script: bundle exec rake spec:$ENVIRONMENT_NAME
-    - name: Ansible 2.6
-      env: ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic
+    - name: Ansible 2.7
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic
       script: bundle exec rake spec:$ENVIRONMENT_NAME
 
     - name: Python 3
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic ANSIBLE_PYTHON_VERSION=3
-      python: 3.6
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=bionic ANSIBLE_PYTHON_VERSION=3
+      python: 3.7
       script: bundle exec rake spec:$ENVIRONMENT_NAME
 
     - stage: Idempotence
       name: Trusty
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=trusty
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=trusty
       script: ./idempotence.sh
     - name: Xenial
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=xenial
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=xenial
       script: ./idempotence.sh
     - name: Bionic
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=bionic
       script: ./idempotence.sh
 
     - name: Ansible 2.5
       env: ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic
       script: ./idempotence.sh
-    - name: Ansible 2.6
-      env: ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic
+    - name: Ansible 2.7
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic
       script: ./idempotence.sh
 
     - name: Python 3
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic ANSIBLE_PYTHON_VERSION=3
-      python: 3.6
+      env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=bionic ANSIBLE_PYTHON_VERSION=3
+      python: 3.7
       script: ./idempotence.sh
 
 before_install:
