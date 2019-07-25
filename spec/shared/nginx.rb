@@ -49,7 +49,7 @@ shared_examples "curl request html" do
   end
 
   it "disallows other sites from embedding in a frame" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Frame-Options: DENY$/i
+    expect(subject.stdout.gsub(/\r/, '')).to match /^X-Frame-Options: SAMEORIGIN$/i
   end
 
   it "disallows content type sniffing" do
@@ -60,8 +60,8 @@ shared_examples "curl request html" do
     expect(subject.stdout.gsub(/\r/, '')).to match /^X-XSS-Protection: 1; mode=block$/i
   end
 
-  it "disables cache transforms" do
-    expect(subject.stdout.gsub(/\r/, '')).to match /^Cache-Control: no-transform$/i
+  it "uses a secure referrer policy" do
+    expect(subject.stdout.gsub(/\r/, '')).to match /^Referrer-Policy: strict-origin-when-cross-origin$/i
   end
 end
 
