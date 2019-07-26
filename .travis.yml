@@ -32,9 +32,6 @@ jobs:
     - name: Ansible 2.5
       env: ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic
       script: bundle exec rake spec:$ENVIRONMENT_NAME
-    - name: Ansible 2.7
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic
-      script: bundle exec rake spec:$ENVIRONMENT_NAME
 
     - name: Python 3
       env: ANSIBLE_VERSION="2.8" ENVIRONMENT_NAME=bionic ANSIBLE_PYTHON_VERSION=3
@@ -54,9 +51,6 @@ jobs:
 
     - name: Ansible 2.5
       env: ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic
-      script: ./idempotence.sh
-    - name: Ansible 2.7
-      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic
       script: ./idempotence.sh
 
     - name: Python 3
