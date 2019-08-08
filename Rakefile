@@ -122,7 +122,7 @@ end
 namespace :init do
   desc "Symbolic link files and templates into the spec/playbooks directory"
   task :links do
-    ["files", "library", "templates"].each do |f|
+    ["files", "library", "templates", "filter_plugins"].each do |f|
       path = "spec/playbooks/#{f}"
       next if File.symlink? path or !File.exist? f
       raise "File #{path} exists and is not a symlink! Don't know what to do" if File.exist? path
