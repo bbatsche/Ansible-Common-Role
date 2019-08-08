@@ -1,7 +1,9 @@
 ---
 # Required before we can update APT
 - name: Install Aptitude
-  apt: pkg=aptitude state=present
+  apt:
+    pkg: aptitude
+    force_apt_get: yes
   become: yes
 
 - name: Update APT

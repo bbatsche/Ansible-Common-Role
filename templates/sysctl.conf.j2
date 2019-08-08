@@ -1,6 +1,6 @@
 # Kernel sysctl configuration file for Linux
 #
-# Version 1.12 - 2015-09-30
+# Version 1.14 - 2019-04-05
 # Michiel Klaver - IT Professional
 # http://klaver.it/linux/ for the latest version - http://klaver.it/bsd/ for a BSD variant
 #
@@ -33,6 +33,7 @@
 # http://www.speedguide.net/read_articles.php?id=121
 # http://lartc.org/howto/lartc.kernel.obscure.html
 # http://en.wikipedia.org/wiki/Sysctl
+# https://blog.cloudflare.com/http-2-prioritization-with-nginx/
 
 ###
 ### GENERAL SYSTEM SECURITY OPTIONS ###
@@ -47,6 +48,10 @@ kernel.core_uses_pid = 1
 
 # Allow for more PIDs
 kernel.pid_max = 65535
+
+# The contents of /proc/<pid>/maps and smaps files are only visible to
+# readers that are allowed to ptrace() the process
+kernel.maps_protect = 1
 
 # Enable ExecShield protection
 # kernel.exec-shield = 1 # Ubuntu protects against buffer overflows automatically and doesn't support exec-shield
@@ -88,8 +93,8 @@ kernel.shmmax = {{ ((ansible_memtotal_mb * 1024 * 1024) * (shmmax_percent|int / 
 # Set total amount of shared memory to {{ shmall_percent }}% of system memory
 kernel.shmall = {{ ((ansible_memtotal_mb * 1024 * 1024) * (shmall_percent|int / 100) / 4096) | int}}
 
-# Keep at least 32MB of free RAM space available
-vm.min_free_kbytes = 32768
+# Keep at least 64MB of free RAM space available
+vm.min_free_kbytes = 65535
 
 ###
 ### GENERAL NETWORK SECURITY OPTIONS ###
@@ -176,9 +181,12 @@ net.ipv6.conf.eth0.accept_ra = 0
 ### TUNING NETWORK PERFORMANCE ###
 ###
 
-# For high-bandwidth low-latency networks, use 'htcp' congestion control
-# Do a 'modprobe tcp_htcp' first
+# Use BBR TCP congestion control and set tcp_notsent_lowat to 16384 to ensure HTTP/2 prioritization works optimally
+# Do a 'modprobe tcp_bbr' first (kernel > 4.9)
+# Fall-back to htcp if bbr is unavailable (older kernels)
 net.ipv4.tcp_congestion_control = htcp
+net.ipv4.tcp_congestion_control = bbr
+net.ipv4.tcp_notsent_lowat = 16384
 
 # For servers with tcp-heavy workloads, enable 'fq' queue management scheduler (kernel > 3.12)
 net.core.default_qdisc = fq
@@ -220,9 +228,11 @@ net.ipv4.tcp_max_orphans = 16384
 net.ipv4.tcp_orphan_retries = 0
 
 {% if ansible_connection != "docker" -%}
-# Increase the maximum memory used to reassemble IP fragments
-net.ipv4.ipfrag_high_thresh = 4194304
-net.ipv4.ipfrag_low_thresh = 3145728
+# Limit the maximum memory used to reassemble IP fragments (CVE-2018-5391)
+net.ipv4.ipfrag_low_thresh = 196608
+net.ipv6.ip6frag_low_thresh = 196608
+net.ipv4.ipfrag_high_thresh = 262144
+net.ipv6.ip6frag_high_thresh = 262144
 {%- endif %}
 
 # don't cache ssthresh from previous connection

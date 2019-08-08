@@ -80,3 +80,4 @@ tmtags
 *.log
 /roles/*
 /config.yml
+__pycache__
